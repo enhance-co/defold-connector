@@ -132,19 +132,26 @@ extern "C" {
    void Defold_Enhance_showInterstitial(const char *pszPlacement);
    bool Defold_Enhance_isRewardedAdReady(const char *pszPlacement);
    void Defold_Enhance_showRewardedAd(const char *pszPlacement, EnhanceListener *pGranted, EnhanceListener *pDeclined, EnhanceListener *pUnavailable);
-   bool Defold_Enhance_isOfferwallReady();
-   void Defold_Enhance_showOfferwall();
-   bool Defold_Enhance_isSpecialOfferReady();
-   void Defold_Enhance_showSpecialOffer();
-   bool Defold_Enhance_isOverlayAdReady();
+   bool Defold_Enhance_isOfferwallReady(const char *pszPlacement);
+   void Defold_Enhance_showOfferwall(const char *pszPlacement);
+   bool Defold_Enhance_isSpecialOfferReady(const char *pszPlacement);
+   void Defold_Enhance_showSpecialOffer(const char *pszPlacement);
+   bool Defold_Enhance_isBannerAdReady(const char *pszPlacement);
    bool Defold_Enhance_isFullscreenAdShowing();
-   void Defold_Enhance_showOverlayAd(const char *pszPosition);
-   void Defold_Enhance_hideOverlayAd();
+   void Defold_Enhance_showBannerAd(const char *pszPlacement, const char *pszPosition);
+   void Defold_Enhance_hideBannerAd();
    void Defold_Enhance_logCustomEvent(const char *pszEventName, const char *pszParamKey, const char *pszParamValue);
    void Defold_Enhance_requestLocalNotificationPermission(EnhanceListener *pGranted, EnhanceListener *pRefused);
    void Defold_Enhance_enableLocalNotification(const char *pszTitle, const char *pszMessage, int delay);
    void Defold_Enhance_disableLocalNotification();
    void Defold_Enhance_pumpEvents();
+   bool Defold_EnhanceInAppPurchases_isSupported();
+   void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed);
+   void Defold_EnhanceInAppPurchases_consume(const char *str_sku, EnhanceListener *callback_onConsumeSuccess, EnhanceListener *callback_onConsumeFailed);
+   const char* Defold_EnhanceInAppPurchases_getDisplayPrice(const char *str_sku, const char *str_default_price);
+   bool Defold_EnhanceInAppPurchases_isItemOwned(const char *str_sku);
+   int Defold_EnhanceInAppPurchases_getOwnedItemCount(const char *str_sku);
+   void Defold_EnhanceInAppPurchases_restorePurchases(EnhanceListener *pSuccess, EnhanceListener *pFailed);
 }
 
 #endif /* _ENHANCE_INTERNAL_H */

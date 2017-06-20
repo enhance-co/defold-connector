@@ -1,5 +1,5 @@
-#define LIB_NAME "EnhanceExtension"
-#define MODULE_NAME "enhance_extension"
+#define LIB_NAME "enhance"
+#define MODULE_NAME "enhance"
 
 #include "enhance_internal.h"
 
@@ -8,6 +8,9 @@
 EnhanceListener g_interstitialCompleted, g_currencyGranted;
 EnhanceListener g_rewardGranted, g_rewardDeclined, g_rewardUnavailable;
 EnhanceListener g_permissionGranted, g_permissionRefused;
+EnhanceListener g_onPurchaseSuccess, g_onPurchaseFailed;
+EnhanceListener g_onConsumeSuccess, g_onConsumeFailed;
+EnhanceListener g_onRestoreSuccess, g_onRestoreFailed;
 
 static int EnhanceIsEnhanced(lua_State* L)
 {
@@ -40,11 +43,16 @@ static int EnhanceSetCurrencyCallback(lua_State* L)
 
 static int EnhanceIsInterstitialReady(lua_State* L)
 {
-   const char* placement = luaL_checkstring(L, 1);
-   
-   if (placement == NULL) placement = "default";
-   
-   bool bIsReady = Defold_Enhance_isInterstitialReady(placement);
+	bool bIsReady = false;
+
+	if (lua_gettop(L) == 1) {
+   		const char* placement = luaL_checkstring(L, 1);
+  
+	 	bIsReady = Defold_Enhance_isInterstitialReady(placement);
+   	}
+   	else{
+    	bIsReady = Defold_Enhance_isInterstitialReady("default");
+    }
    
    // Return 1 value
    lua_pushboolean(L, bIsReady);
@@ -53,11 +61,14 @@ static int EnhanceIsInterstitialReady(lua_State* L)
 
 static int EnhanceShowInterstitial(lua_State* L)
 {
-   const char* placement = luaL_checkstring(L, 1);
-   
-   if (placement == NULL) placement = "default";
-   
-   Defold_Enhance_showInterstitial(placement);
+	if (lua_gettop(L) == 1) {
+   		const char* placement = luaL_checkstring(L, 1);
+  
+   		Defold_Enhance_showInterstitial(placement);
+   	}
+   	else{
+    	Defold_Enhance_showInterstitial("default");
+    }
    
    // Return no value
    return 0;
@@ -65,11 +76,17 @@ static int EnhanceShowInterstitial(lua_State* L)
 
 static int EnhanceIsRewardedAdReady(lua_State* L)
 {
-   const char* placement = luaL_checkstring(L, 1);
+	bool bIsReady = false;
+	
+	if (lua_gettop(L) == 1) {
+   		const char* placement = luaL_checkstring(L, 1);
    
-   if (placement == NULL) placement = "default";
-   
-   bool bIsReady = Defold_Enhance_isRewardedAdReady(placement);
+   		bIsReady = Defold_Enhance_isRewardedAdReady(placement);
+   	}
+   	else
+   	{
+   		bIsReady = Defold_Enhance_isRewardedAdReady("neutral");
+   	}
    
    // Return 1 value
    lua_pushboolean(L, bIsReady);
@@ -78,17 +95,21 @@ static int EnhanceIsRewardedAdReady(lua_State* L)
 
 static int EnhanceShowRewardedAd(lua_State* L)
 {
-   const char* placement = luaL_checkstring(L, 1);
+	if (lua_gettop(L) == 3) {
+   		g_rewardGranted.set(L, 1);
+   		g_rewardDeclined.set(L, 2);
+   		g_rewardUnavailable.set(L, 3);
    
-   if (placement == NULL) placement = "default";
-   
-   fprintf(stderr, "EnhanceShowRewardedAd: %s\n", placement);
-   
-   g_rewardGranted.set(L, 2);
-   g_rewardDeclined.set(L, 3);
-   g_rewardUnavailable.set(L, 4);
-   
-   Defold_Enhance_showRewardedAd(placement, &g_rewardGranted, &g_rewardDeclined, &g_rewardUnavailable);
+   		Defold_Enhance_showRewardedAd("neutral", &g_rewardGranted, &g_rewardDeclined, &g_rewardUnavailable);
+   }else if(lua_gettop(L) == 4) {
+   		const char* placement = luaL_checkstring(L, 1);
+   		
+   		g_rewardGranted.set(L, 2);
+   		g_rewardDeclined.set(L, 3);
+   		g_rewardUnavailable.set(L, 4);
+   		
+   		Defold_Enhance_showRewardedAd(placement, &g_rewardGranted, &g_rewardDeclined, &g_rewardUnavailable);
+   }
    
    // Return no value
    return 0;
@@ -96,7 +117,16 @@ static int EnhanceShowRewardedAd(lua_State* L)
 
 static int EnhanceIsOfferwallReady(lua_State* L)
 {
-   bool bIsReady = Defold_Enhance_isOfferwallReady();
+	bool bIsReady = false;
+
+	if (lua_gettop(L) == 1) {
+   		const char* placement = luaL_checkstring(L, 1);
+  
+	 	bIsReady = Defold_Enhance_isOfferwallReady(placement);
+   	}
+   	else{
+    	bIsReady = Defold_Enhance_isOfferwallReady("default");
+    }
    
    // Return 1 value
    lua_pushboolean(L, bIsReady);
@@ -105,7 +135,13 @@ static int EnhanceIsOfferwallReady(lua_State* L)
 
 static int EnhanceShowOfferwall(lua_State* L)
 {
-   Defold_Enhance_showOfferwall();
+	if (lua_gettop(L) == 1) {
+   		const char* placement = luaL_checkstring(L, 1);
+
+   		Defold_Enhance_showOfferwall(placement);
+   	}else{
+   		Defold_Enhance_showOfferwall("default");
+   	}
    
    // Return no value
    return 0;
@@ -113,7 +149,16 @@ static int EnhanceShowOfferwall(lua_State* L)
 
 static int EnhanceIsSpecialOfferReady(lua_State* L)
 {
-   bool bIsReady = Defold_Enhance_isSpecialOfferReady();
+	bool bIsReady = false;
+
+	if (lua_gettop(L) == 1) {
+   		const char* placement = luaL_checkstring(L, 1);
+  
+	 	bIsReady = Defold_Enhance_isSpecialOfferReady(placement);
+   	}
+   	else{
+    	bIsReady = Defold_Enhance_isSpecialOfferReady("default");
+    }
    
    // Return 1 value
    lua_pushboolean(L, bIsReady);
@@ -122,7 +167,13 @@ static int EnhanceIsSpecialOfferReady(lua_State* L)
 
 static int EnhanceShowSpecialOffer(lua_State* L)
 {
-   Defold_Enhance_showSpecialOffer();
+	if (lua_gettop(L) == 1) {
+   		const char* placement = luaL_checkstring(L, 1);
+
+   		Defold_Enhance_showSpecialOffer(placement);
+   	}else{
+   		Defold_Enhance_showSpecialOffer("default");
+   	}
    
    // Return no value
    return 0;
@@ -137,30 +188,47 @@ static int EnhanceIsFullscreenAdShowing(lua_State* L)
    return 1;
 }
 
-static int EnhanceIsOverlayAdReady(lua_State* L)
+static int EnhanceIsBannerAdReady(lua_State* L)
 {
-   bool bIsReady = Defold_Enhance_isOverlayAdReady();
+	bool bIsReady = false;
+
+	if (lua_gettop(L) == 1) {
+   		const char* placement = luaL_checkstring(L, 1);
+  
+	 	bIsReady = Defold_Enhance_isBannerAdReady(placement);
+   	}
+   	else{
+    	bIsReady = Defold_Enhance_isBannerAdReady("default");
+    }
    
    // Return 1 value
    lua_pushboolean(L, bIsReady);
    return 1;
 }
 
-static int EnhanceShowOverlayAd(lua_State* L)
+static int EnhanceShowBannerAd(lua_State* L)
 {
-   const char* position = luaL_checkstring(L, 1);
-   
-   if (position == NULL) position = "top";
-   
-   Defold_Enhance_showOverlayAd(position);
+	const char* position;
+	const char* placement;
+	
+	if (lua_gettop(L) == 1) {
+		position = luaL_checkstring(L, 1);
+		Defold_Enhance_showBannerAd("default", position);
+	}else if (lua_gettop(L) == 2) {
+		placement = luaL_checkstring(L, 1);
+		position = luaL_checkstring(L, 2);
+		Defold_Enhance_showBannerAd(placement, position);
+	}else{
+		Defold_Enhance_showBannerAd("default", "bottom");
+	}
    
    // Return no value
    return 0;
 }
 
-static int EnhanceHideOverlayAd(lua_State* L)
+static int EnhanceHideBannerAd(lua_State* L)
 {
-   Defold_Enhance_hideOverlayAd();
+   Defold_Enhance_hideBannerAd();
    
    // Return no value
    return 0;
@@ -210,9 +278,84 @@ static int EnhanceDisableLocalNotification(lua_State* L)
    return 0;
 }
 
-static int EnhancePumpEvents(lua_State* L)
+static int EnhanceIAPIsSupported(lua_State* L)
 {
-   Defold_Enhance_pumpEvents();
+   bool bIsReady = Defold_EnhanceInAppPurchases_isSupported();
+   
+   // Return 1 value
+   lua_pushboolean(L, bIsReady);
+   return 1;
+}
+
+static int EnhanceAttemptPurchase(lua_State* L)
+{
+
+   const char* str_sku = luaL_checkstring(L, 1);
+
+   g_onPurchaseSuccess.set(L, 2);
+   g_onPurchaseFailed.set(L, 3);
+   
+   Defold_EnhanceInAppPurchases_attemptPurchase(str_sku, &g_onPurchaseSuccess, &g_onPurchaseFailed);
+   
+   // Return no value
+   return 0;
+}
+
+
+static int EnhanceConsume(lua_State* L)
+{
+
+   const char* str_sku = luaL_checkstring(L, 1);
+
+   g_onConsumeSuccess.set(L, 2);
+   g_onConsumeFailed.set(L, 3);
+   
+   Defold_EnhanceInAppPurchases_consume(str_sku, &g_onConsumeSuccess, &g_onConsumeFailed);
+   
+   // Return no value
+   return 0;
+}
+
+static int EnhanceGetDisplayPrice(lua_State* L)
+{
+   const char* str_sku = luaL_checkstring(L, 1);
+   const char* str_default_price = luaL_checkstring(L, 2);
+   
+   const char* price_str = Defold_EnhanceInAppPurchases_getDisplayPrice(str_sku, str_default_price);
+   
+   // Return 1 value
+   lua_pushstring(L, price_str);
+   return 1;
+}
+
+static int EnhanceIsItemOwned(lua_State* L)
+{
+	const char* str_sku = luaL_checkstring(L, 1);
+
+   bool bIsReady = Defold_EnhanceInAppPurchases_isItemOwned(str_sku);
+   
+   // Return 1 value
+   lua_pushboolean(L, bIsReady);
+   return 1;
+}
+
+static int EnhanceGetOwnedItemCount(lua_State* L)
+{
+	const char* str_sku = luaL_checkstring(L, 1);
+
+   int itemCount = Defold_EnhanceInAppPurchases_getOwnedItemCount(str_sku);
+   
+   // Return 1 value
+   lua_pushinteger(L, itemCount);
+   return 1;
+}
+
+static int EnhanceRestorePurchases(lua_State* L)
+{
+   g_onConsumeSuccess.set(L, 1);
+   g_onConsumeFailed.set(L, 2);
+
+   Defold_EnhanceInAppPurchases_restorePurchases(&g_onConsumeSuccess, &g_onConsumeFailed);
    
    // Return no value
    return 0;
@@ -232,15 +375,21 @@ static const luaL_reg Module_methods[] =
    {"showOfferwall", EnhanceShowOfferwall},
    {"isSpecialOfferReady", EnhanceIsSpecialOfferReady},
    {"showSpecialOffer", EnhanceShowSpecialOffer},
-   {"isOverlayAdReady", EnhanceIsOverlayAdReady},
-   {"showOverlayAd", EnhanceShowOverlayAd},
-   {"hideOverlayAd", EnhanceHideOverlayAd},
+   {"isBannerAdReady", EnhanceIsBannerAdReady},
+   {"showBannerAd", EnhanceShowBannerAd},
+   {"hideBannerAd", EnhanceHideBannerAd},
    {"isFullscreenAdShowing", EnhanceIsFullscreenAdShowing},
    {"logCustomEvent", EnhanceLogCustomEvent},
    {"requestLocalNotificationPermission", EnhanceRequestLocalNotificationPermission},
    {"enableLocalNotification", EnhanceEnableLocalNotification},
    {"disableLocalNotification", EnhanceDisableLocalNotification},
-   {"pumpEvents", EnhancePumpEvents},
+   {"iapIsSupported", EnhanceIAPIsSupported},
+   {"attemptPurchase", EnhanceAttemptPurchase},
+   {"isItemOwned", EnhanceConsume},   
+   {"getDisplayPrice", EnhanceGetDisplayPrice},
+   {"isItemOwned", EnhanceIsItemOwned},
+   {"getOwnedItemCount", EnhanceGetOwnedItemCount},
+   {"restorePurchases", EnhanceRestorePurchases},
    {0, 0}
 };
 
@@ -279,9 +428,15 @@ dmExtension::Result FinalizeEnhanceExtension(dmExtension::Params* params)
    return dmExtension::RESULT_OK;
 }
 
+dmExtension::Result UpdateExtension(dmExtension::Params* params)
+{
+	Defold_Enhance_pumpEvents();
+    return dmExtension::RESULT_OK;
+}
+
 
 // Defold SDK uses a macro for setting up extension entry points:
 //
 // DM_DECLARE_EXTENSION(symbol, name, app_init, app_final, init, update, on_event, final)
 
-DM_DECLARE_EXTENSION(EnhanceExtension, LIB_NAME, AppInitializeEnhanceExtension, AppFinalizeEnhanceExtension, InitializeEnhanceExtension, 0, 0, FinalizeEnhanceExtension)
+DM_DECLARE_EXTENSION(EnhanceExtension, LIB_NAME, AppInitializeEnhanceExtension, AppFinalizeEnhanceExtension, InitializeEnhanceExtension, UpdateExtension, 0, FinalizeEnhanceExtension)

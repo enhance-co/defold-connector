@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 
+#define PLACEMENT_DEFAULT @"default"
+
 #define INTERSTITIAL_PLACEMENT_DEFAULT @"default"
 #define INTERSTITIAL_PLACEMENT_LEVEL_COMPLETED @"level_completed"
 
@@ -79,13 +81,20 @@ typedef enum {
 -(void)showOverlayAdWithRect:(CGRect)rect;
 -(void)hideOverlayAd;
 -(BOOL)isBannerAdReady;
+-(BOOL)isBannerAdReady:(NSString*)placement;
 -(void)showBannerAd:(Position)position;
+-(void)showBannerAd:(NSString*)placement position:(Position)position;
 -(void)showBannerAdWithRect:(CGRect)rect;
+-(void)showBannerAdWithRect:(NSString*)placement rect:(CGRect)rect;
 -(void)hideBannerAd;
 -(BOOL)isSpecialOfferReady;
+-(BOOL)isSpecialOfferReady:(NSString*)placement;
 -(void)showSpecialOffer;
+-(void)showSpecialOffer:(NSString*)placement;
 -(BOOL)isOfferwallReady;
+-(BOOL)isOfferwallReady:(NSString*)placement;
 -(void)showOfferwall;
+-(void)showOfferwall:(NSString*)placement;
 -(void)logEvent:(NSString*)eventType;
 -(void)logEvent:(NSString*)eventType withParameter:(NSString*)paramKey andValue:(NSString*)paramValue;
 -(void)requestLocalNotificationPermission:(id)delegate;

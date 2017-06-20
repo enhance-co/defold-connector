@@ -16,9 +16,6 @@
 #include <pthread.h>
 #include <jni.h>
 #include <android/log.h>
-#include "FglEnhanceAndroid.h"
-#include "FglEnhancePlusAndroid.h"
-#include "FglEnhanceInAppPurchasesAndroid.h"
 #include "enhance_internal.h"
 
 static EnhanceListener *g_pInterstitialCompleted;
@@ -28,6 +25,10 @@ static EnhanceListener *g_pRewardDeclined;
 static EnhanceListener *g_pRewardUnavailable;
 static EnhanceListener *g_pPermissionGranted;
 static EnhanceListener *g_pPermissionRefused;
+static EnhanceListener *g_callback_onPurchaseSuccess;
+static EnhanceListener *g_callback_onPurchaseFailed;
+static EnhanceListener *g_callback_onConsumeSuccess;
+static EnhanceListener *g_callback_onConsumeFailed;
 
 /** Java class names of the Enhance connector */
 #define INTERNAL_JAVA_CLASS "com.fgl.enhance.connector.Internal"
@@ -543,6 +544,46 @@ void enhanceJniCallIntIntIntIntRetVoid (const char *lpszClassName, const char *l
 }
 
 /**
+ * Call java method with 4 int parameters
+ *
+ * @param lpszClassName name of class that contains the method
+ * @param lpszMethodName name of method to call
+ * @param lpszParam1 parameter 1
+ * @param lpszParam2 parameter 2
+ * @param lpszParam3 parameter 3
+ * @param lpszParam4 parameter 4
+ * @param lpszParam5 parameter 5
+ */
+
+void enhanceJniCallStrIntIntIntIntRetVoid (const char *lpszClassName, const char *lpszMethodName, const char *lpszParam1, float fParam2, float fParam3, float fParam4, float fParam5) {
+   JNIEnv *threadEnv = NULL;
+   jclass adsorbJniClass;
+   jmethodID methodId;
+   jobject strParam1;
+   
+   AttachScope attachscope;
+   threadEnv = attachscope.m_Env;
+
+   adsorbJniClass = GetClass(threadEnv, lpszClassName);
+   
+   strParam1 = threadEnv->NewStringUTF (lpszParam1);
+
+   if (adsorbJniClass) {
+      methodId = threadEnv->GetStaticMethodID (adsorbJniClass, lpszMethodName, "(Ljava/lang/String;IIII)V");
+      if (methodId != 0) {
+         threadEnv->CallStaticVoidMethod (adsorbJniClass, methodId, strParam1, fParam2, fParam3, fParam4, fParam5);
+         threadEnv->DeleteLocalRef (adsorbJniClass);
+      }
+      else {
+         LOGI ("Enhance: method not found: %s", lpszMethodName);
+      }
+   }
+   else {
+      LOGI ("Enhance: java class not found");
+   }
+}
+
+/**
  * Call Enhance connector java method that takes no parameters and returns a string value
  *
  * @param lpszClassName name of class that contains the method
@@ -834,27 +875,31 @@ JNIEXPORT void FglEnhance_pumpEvents(void) {
 		      	g_pCurrencyGranted->callWithIntParam(intParam[0]);
 			break;
 
-		/*
+		
 		case ENHANCE_EVENT_PURCHASE_SUCCEEDED:
-			if (g_callback_onPurchaseSuccess != NULL)
-				g_callback_onPurchaseSuccess();
+			dmLogInfo("EnhanceDefold[android]: onPurchaseSuccess");
+			if (g_callback_onPurchaseSuccess)
+				g_callback_onPurchaseSuccess->callWithNoParam();
 			break;
 
 		case ENHANCE_EVENT_PURCHASE_FAILED:
-			if (g_callback_onPurchaseFailed != NULL)
-				g_callback_onPurchaseFailed();
+			dmLogInfo("EnhanceDefold[android]: onPurchaseFailed");
+			if (g_callback_onPurchaseFailed)
+			g_callback_onPurchaseFailed->callWithNoParam();
 			break;
 
 		case ENHANCE_EVENT_CONSUME_SUCCEEDED:
-			if (g_callback_onConsumeSuccess != NULL)
-				g_callback_onConsumeSuccess();
+			dmLogInfo("EnhanceDefold[android]: onConsumeSuccess");
+			if (g_callback_onConsumeSuccess)
+				g_callback_onConsumeSuccess->callWithNoParam();
 			break;
 
 		case ENHANCE_EVENT_CONSUME_FAILED:
-			if (g_callback_onConsumeFailed != NULL)
-				g_callback_onConsumeFailed();
+			dmLogInfo("EnhanceDefold[android]: onConsumeFailed");
+			if (g_callback_onConsumeFailed)
+				g_callback_onConsumeFailed->callWithNoParam();
 			break; 
-		*/
+		
 		}
 	} while (nEventType != ENHANCE_EVENT_NONE);
 }
@@ -943,15 +988,15 @@ JNIEXPORT void Defold_Enhance_setCurrencyCallback(EnhanceListener *pGranted) {
  * 
  * @return true if ready, false if not
  */
-JNIEXPORT bool Defold_Enhance_isSpecialOfferReady(void) {
-	return enhanceJniCallVoidRetBool(ENHANCE_JAVA_CLASS, "isSpecialOfferReady");
+JNIEXPORT bool Defold_Enhance_isSpecialOfferReady(const char *str_placement) {
+	return enhanceJniCallStrRetBool(ENHANCE_JAVA_CLASS, "isSpecialOfferReady", str_placement);
 }
 
 /**
  * Show special offer
  */
-JNIEXPORT void Defold_Enhance_showSpecialOffer(void) {
-	enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "showSpecialOffer");
+JNIEXPORT void Defold_Enhance_showSpecialOffer(const char *str_placement) {
+	enhanceJniCallStrRetVoid(ENHANCE_JAVA_CLASS, "showSpecialOffer", str_placement);
 }
 
 /**
@@ -959,15 +1004,15 @@ JNIEXPORT void Defold_Enhance_showSpecialOffer(void) {
  * 
  * @return true if ready, false if not
  */
-JNIEXPORT bool Defold_Enhance_isOfferwallReady(void) {
-	return enhanceJniCallVoidRetBool(ENHANCE_JAVA_CLASS, "isOfferwallReady");
+JNIEXPORT bool Defold_Enhance_isOfferwallReady(const char *str_placement) {
+	return enhanceJniCallStrRetBool(ENHANCE_JAVA_CLASS, "isOfferwallReady", str_placement);
 }
 
 /**
  * Show offerwall
  */
-JNIEXPORT void Defold_Enhance_showOfferwall (void) {
-	enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "showOfferwall");
+JNIEXPORT void Defold_Enhance_showOfferwall (const char *str_placement) {
+	enhanceJniCallStrRetVoid(ENHANCE_JAVA_CLASS, "showOfferwall", str_placement);
 }
 
 /**
@@ -991,47 +1036,35 @@ JNIEXPORT bool Defold_Enhance_isFullscreenAdShowing() {
 }
 
 /**
- * Check if an overlay is ready to show
+ * Check if a banner is ready to show
  * 
  * @return true if ready, false if not
  */
-JNIEXPORT bool Defold_Enhance_isOverlayAdReady(void) {
-   return enhanceJniCallVoidRetBool(ENHANCE_JAVA_CLASS, "isOverlayAdReady");
+JNIEXPORT bool Defold_Enhance_isBannerAdReady(const char *str_placement) {
+   return enhanceJniCallStrRetBool(ENHANCE_JAVA_CLASS, "isBannerAdReady", str_placement);
 }
 
 /**
- * Show overlay ad
+ * Show banner ad
  *
  * @param position ad position (top or bottom)
  */
-JNIEXPORT void Defold_Enhance_showOverlayAd(const char *pszPosition) {
-	enhanceJniCallStrRetVoid(INTERNAL_JAVA_CLASS, "showOverlayAdWithPositionJNI", pszPosition);
+JNIEXPORT void Defold_Enhance_showBannerAd(const char *str_placement, const char *pszPosition) {
+	enhanceJniCallStrStrRetVoid(ENHANCE_JAVA_CLASS, "showBannerAdWithPosition", str_placement, pszPosition);
 }
 
 /**
- * Show overlay ad
- *
- * @param x X coordinate of top, left of rectangle to show ad at, in screen coordinates
- * @param y Y coordinate of top, left of rectangle to show ad at, in screen coordinates
- * @param width width of rectangle to show ad at, in screen coordinates
- * @param height height of rectangle to show ad at, in screen coordinates
+ * Hide banner ad, if one is showing
  */
-JNIEXPORT void FglEnhance_showOverlayAdWithRect(int x, int y, int width, int height) {
-	enhanceJniCallIntIntIntIntRetVoid(ENHANCE_JAVA_CLASS, "showOverlayAdWithRect", x, y, width, height);
+JNIEXPORT void Defold_Enhance_hideBannerAd() {
+	enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "hideBannerAd");
 }
 
 /**
- * Hide overlay ad, if one is showing
+ * Show a new ad in the banner, if one is showing
  */
-JNIEXPORT void Defold_Enhance_hideOverlayAd() {
-	enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "hideOverlayAd");
-}
-
-/**
- * Show a new ad in the overlay, if one is showing
- */
-JNIEXPORT void FglEnhance_refreshOverlayAd() {
-	enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "refreshOverlayAd");
+JNIEXPORT void Defold_Enhance_refreshBannerAd() {
+	enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "refreshBannerAd");
 }
 
 /**
@@ -1042,8 +1075,8 @@ JNIEXPORT void FglEnhance_refreshOverlayAd() {
 */
 JNIEXPORT void Defold_Enhance_requestLocalNotificationPermission(EnhanceListener *pGranted,
 															 EnhanceListener *pRefused) {
-   if (g_pPermissionGranted) 
-      g_pPermissionGranted->callWithNoParam();
+   if (pGranted) 
+      pGranted->callWithNoParam();
 }
 
 /**
@@ -1069,133 +1102,43 @@ JNIEXPORT void Defold_Enhance_pumpEvents() {
 }
 
 /**
- * Log debug message to the console
- * 
- * @param tag tag to use
- * @param message message to log
- */
-
-JNIEXPORT void FglEnhancePlus_logMessage(const char *str_tag, const char *str_message) {
-	enhanceJniCallStrStrRetVoid(ENHANCEPLUS_JAVA_CLASS, "logMessage", str_tag, str_message);
-}
-
-/**
- * Get app's version name
- * 
- * @param out_buffer output buffer for app's version name string
- * @param out_buffer_size size of output buffer in bytes
- */
-
-JNIEXPORT void FglEnhancePlus_getAppVersionName(char *out_buffer, size_t out_buffer_size) {
-	enhanceJniCallVoidRetString(ENHANCEPLUS_JAVA_CLASS, "getAppVersionName", out_buffer, out_buffer_size);
-}
-
-/**
- * Get app's version code
- * 
- * @return version code
- */
-
-JNIEXPORT int FglEnhancePlus_getAppVersionCode() {
-	return enhanceJniCallVoidRetInt(ENHANCEPLUS_JAVA_CLASS, "getAppVersionCode");
-}
-
-/**
- * Check the app's target market
- * 
- * @param out_buffer output buffer for target market string (such as googleplay or amazon)
- * @param out_buffer_size size of output buffer in bytes
- */
-
-JNIEXPORT void FglEnhancePlus_getMarket(char *out_buffer, size_t out_buffer_size) {
-	enhanceJniCallVoidRetString(ENHANCEPLUS_JAVA_CLASS, "getMarket", out_buffer, out_buffer_size);
-}
-
-/**
- * Get arbitrary configuration variable, as passed in by Enhance
- * 
- * @param str_varName variable name (case-sensitive)
- * @param out_buffer output buffer for value string
- * @param out_buffer_size size of output buffer in bytes
- */
-
-JNIEXPORT void FglEnhancePlus_getConfigVariable(const char *str_varName, char *out_buffer, size_t out_buffer_size) {
-	enhanceJniCallStrRetString(ENHANCEPLUS_JAVA_CLASS, "getConfigVariable", str_varName, out_buffer, out_buffer_size);
-}
-
-/**
- * Update the value of a particular SDK key
- *
- * @param str_id ID of sdk to set key for
- * @param str_key key to set
- * @param str_value new value
- */
-
-JNIEXPORT void FglEnhancePlus_setSdkValue(const char *str_id, const char *str_key, const char *str_value) {
-   enhanceJniCallStrStrStrRetVoid(ENHANCEPLUS_JAVA_CLASS, "setSdkValue", str_id, str_key, str_value);
-}
-
-/**
- * Set current screen
- *
- * @param str_name name of the currently displayed screen
- */
-
-JNIEXPORT void FglEnhancePlus_setCurrentScreen(const char *str_name) {
-   enhanceJniCallStrRetVoid(ENHANCEPLUS_JAVA_CLASS, "setCurrentScreen", str_name);
-}
-
-/**
- * Get id of sdk that granted the most recent reward
- *
- * @param out_buffer output buffer for value string
- * @param out_buffer_size size of output buffer in bytes
- */
-JNIEXPORT void FglEnhancePlus_getSdkIdForLastReward(char *out_buffer, size_t out_buffer_size) {
-   enhanceJniCallVoidRetString(ENHANCEPLUS_JAVA_CLASS, "getSdkIdForLastReward", out_buffer, out_buffer_size);
-}
-
-
-/**
  * Check if in-app purchases are supported
  * 
  * @return true if supported, false if not
+*/
 
-
-JNIEXPORT bool FglEnhanceInAppPurchases_isSupported() {
+JNIEXPORT bool Defold_EnhanceInAppPurchases_isSupported() {
 	return enhanceJniCallVoidRetBool(ENHANCEINAPPURCHASES_JAVA_CLASS, "isSupported");
 }
- */
+ 
 /**
  * Attempt purchase
  * 
  * @param str_sku product to purchase
  * @param callback_onPurchaseSuccess function called when the purchase is successful
  * @param callback_onPurchaseFailed function called when the purchase is declined
+*/
 
-
-JNIEXPORT void FglEnhanceInAppPurchases_attemptPurchase(const char *str_sku, void(*callback_onPurchaseSuccess)(void),
-														void(*callback_onPurchaseFailed)(void)) {
+JNIEXPORT void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed) {
 	g_callback_onPurchaseSuccess = callback_onPurchaseSuccess;
 	g_callback_onPurchaseFailed = callback_onPurchaseFailed;
 	enhanceJniCallStrRetVoid(INTERNAL_JAVA_CLASS, "attemptPurchaseJNI", str_sku);
 }
- */
+ 
 /**
  * Consume purchase
  * 
  * @param str_sku product to consume
  * @param callback_onConsumeSuccess function called when the purchase is successful
  * @param callback_onConsumeFailed function called when the purchase is declined
+*/
 
-
-JNIEXPORT void FglEnhanceInAppPurchases_consume(const char *str_sku, void(*callback_onConsumeSuccess)(void),
-												void(*callback_onConsumeFailed)(void)) {
+JNIEXPORT void Defold_EnhanceInAppPurchases_consume(const char *str_sku, EnhanceListener *callback_onConsumeSuccess, EnhanceListener *callback_onConsumeFailed) {
 	g_callback_onConsumeSuccess = callback_onConsumeSuccess;
 	g_callback_onConsumeFailed = callback_onConsumeFailed;
 	enhanceJniCallStrRetVoid(INTERNAL_JAVA_CLASS, "consumeJNI", str_sku);
 }
- */
+ 
 /**
  * Get product price
  * 
@@ -1205,8 +1148,12 @@ JNIEXPORT void FglEnhanceInAppPurchases_consume(const char *str_sku, void(*callb
  * @param out_buffer_size size of output buffer in bytes
  */
 
-JNIEXPORT void FglEnhanceInAppPurchases_getDisplayPrice(const char *str_sku, const char *str_default_price, char *out_buffer, size_t out_buffer_size) {
-	enhanceJniCallStrStrRetString(ENHANCEINAPPURCHASES_JAVA_CLASS, "getDisplayPrice", str_sku, str_default_price, out_buffer, out_buffer_size);
+JNIEXPORT const char* Defold_EnhanceInAppPurchases_getDisplayPrice(const char *str_sku, const char *str_default_price) {
+    char buffer[32] = "";
+    char* out_buffer = buffer;
+	enhanceJniCallStrStrRetString(ENHANCEINAPPURCHASES_JAVA_CLASS, "getDisplayPrice", str_sku, str_default_price, out_buffer, 32);
+	
+	return out_buffer;
 }
 
 /**
@@ -1217,7 +1164,7 @@ JNIEXPORT void FglEnhanceInAppPurchases_getDisplayPrice(const char *str_sku, con
  * @return true if owned, false if not
  */
 
-JNIEXPORT bool FglEnhanceInAppPurchases_isItemOwned(const char *str_sku) {
+JNIEXPORT bool Defold_EnhanceInAppPurchases_isItemOwned(const char *str_sku) {
 	return enhanceJniCallStrRetBool(ENHANCEINAPPURCHASES_JAVA_CLASS, "isItemOwned", str_sku);
 }
 
@@ -1229,8 +1176,12 @@ JNIEXPORT bool FglEnhanceInAppPurchases_isItemOwned(const char *str_sku) {
  * @return number of copies owned
  */
 
-JNIEXPORT int FglEnhanceInAppPurchases_getOwnedItemCount(const char *str_sku) {
+JNIEXPORT int Defold_EnhanceInAppPurchases_getOwnedItemCount(const char *str_sku) {
 	return enhanceJniCallStrRetInt(ENHANCEINAPPURCHASES_JAVA_CLASS, "getOwnedItemCount", str_sku);
+}
+
+JNIEXPORT void Defold_EnhanceInAppPurchases_restorePurchases(EnhanceListener *pSuccess, EnhanceListener *pFailed) {
+
 }
 
 /** Called when this native library is loaded by the app's java code */
