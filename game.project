@@ -1,6 +1,6 @@
 [project]
-title = My project
-version = 0.1
+title = Enhance Defold
+version = 1
 
 [bootstrap]
 main_collection = /main/main.collectionc
@@ -18,3 +18,11 @@ scale = 0.02
 [script]
 shared_state = 1
 
+[android]
+package = co.enhance.defold
+
+[ios]
+bundle_identifier = co.enhance.defold
+
+[library]
+include_dirs = enhance_extension

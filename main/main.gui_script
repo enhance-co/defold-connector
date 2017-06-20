@@ -1,0 +1,145 @@
+overlay_shown = false
+
+function init(self)
+    -- Add initialization code here
+    -- Remove this function if not needed
+    msg.post(".", "acquire_input_focus")
+    enhance_extension.setInterstitialCallback(function(self)
+       print("interstitial completed")
+    end)
+    
+    if enhance_extension.isEnhanced() then
+       print("App is enhanced")
+    else
+       print("App is unenhanced")
+    end
+    
+    enhance_extension.requestLocalNotificationPermission(function(self)
+       print("local notifications permission granted")
+       enhance_extension.enableLocalNotification("Defold demo", "Enhance is awesome!", 60);
+    end, function(self)
+       print("local notifications permission refused")
+    end)
+end
+
+function final(self)
+    -- Add finalization code here
+    -- Remove this function if not needed
+end
+
+function update(self, dt)
+    -- Add update code here
+    enhance_extension.pumpEvents()
+    -- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+    -- Add message-handling code here
+    -- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+    -- Add input-handling code here
+    -- Remove this function if not needed
+    if action_id == hash("touch") and gui.pick_node(gui.get_node("btn_interstitial"), action.x, action.y) then
+        if action.pressed then
+		    if enhance_extension.isInterstitialReady("default") then
+			    gui.set_color(gui.get_node("btn_interstitial"), vmath.vector4(0.7*49.0/255,0.7*26.0/255,0.7*255.0/255,1))
+			else
+			    gui.set_color(gui.get_node("btn_interstitial"), vmath.vector4(0.7*255.0/255,0.7*26.0/255,0.7*26.0/255,1))
+			end
+        elseif action.released then
+		    gui.set_color(gui.get_node("btn_interstitial"), vmath.vector4(49.0/255,26.0/255,255.0/255,1))
+		    if enhance_extension.isInterstitialReady("default") then
+			    enhance_extension.showInterstitial("default")
+			end
+        end
+    end
+    
+    if action_id == hash("touch") and gui.pick_node(gui.get_node("btn_rewarded"), action.x, action.y) then
+        if action.pressed then
+		    if enhance_extension.isRewardedAdReady("neutral") then
+			    gui.set_color(gui.get_node("btn_rewarded"), vmath.vector4(0.7*49.0/255,0.7*26.0/255,0.7*255.0/255,1))
+			else
+			    gui.set_color(gui.get_node("btn_rewarded"), vmath.vector4(0.7*255.0/255,0.7*26.0/255,0.7*26.0/255,1))
+			end
+        elseif action.released then
+		    gui.set_color(gui.get_node("btn_rewarded"), vmath.vector4(49.0/255,26.0/255,255.0/255,1))
+		    if enhance_extension.isRewardedAdReady("neutral") then
+			    enhance_extension.showRewardedAd("neutral", function(self, rewardValue, rewardType)
+			    	print("reward granted, value: " .. rewardValue .. ", type: " .. rewardType)
+		    		gui.set_color(gui.get_node("btn_rewarded"), vmath.vector4(19.0/255,155.0/255,26.0/255,1))
+			    end, function(self)
+			    	print("reward declined")
+			    end, function(self)
+			    	print("reward unavailable")
+			    end)
+			end
+        end
+    end
+
+    if action_id == hash("touch") and gui.pick_node(gui.get_node("btn_offerwall"), action.x, action.y) then
+        if action.pressed then
+		    if enhance_extension.isOfferwallReady() then
+			    gui.set_color(gui.get_node("btn_offerwall"), vmath.vector4(0.7*49.0/255,0.7*26.0/255,0.7*255.0/255,1))
+			else
+			    gui.set_color(gui.get_node("btn_offerwall"), vmath.vector4(0.7*255.0/255,0.7*26.0/255,0.7*26.0/255,1))
+			end
+        elseif action.released then
+		    gui.set_color(gui.get_node("btn_offerwall"), vmath.vector4(49.0/255,26.0/255,255.0/255,1))
+		    if enhance_extension.isOfferwallReady() then
+			    enhance_extension.showOfferwall()
+			end
+        end
+    end
+    
+    if action_id == hash("touch") and gui.pick_node(gui.get_node("btn_specialoffer"), action.x, action.y) then
+        if action.pressed then
+		    if enhance_extension.isSpecialOfferReady() then
+			    gui.set_color(gui.get_node("btn_specialoffer"), vmath.vector4(0.7*49.0/255,0.7*26.0/255,0.7*255.0/255,1))
+			else
+			    gui.set_color(gui.get_node("btn_specialoffer"), vmath.vector4(0.7*255.0/255,0.7*26.0/255,0.7*26.0/255,1))
+			end
+        elseif action.released then
+		    gui.set_color(gui.get_node("btn_specialoffer"), vmath.vector4(49.0/255,26.0/255,255.0/255,1))
+		    if enhance_extension.isSpecialOfferReady() then
+			    enhance_extension.showSpecialOffer()
+			end
+        end
+    end
+    
+    if action_id == hash("touch") and gui.pick_node(gui.get_node("btn_overlay"), action.x, action.y) then
+        if action.pressed then
+		    if overlay_shown or enhance_extension.isOverlayAdReady() then
+			    gui.set_color(gui.get_node("btn_overlay"), vmath.vector4(0.7*49.0/255,0.7*26.0/255,0.7*255.0/255,1))
+			else
+			    gui.set_color(gui.get_node("btn_overlay"), vmath.vector4(0.7*255.0/255,0.7*26.0/255,0.7*26.0/255,1))
+			end
+        elseif action.released then
+		    gui.set_color(gui.get_node("btn_overlay"), vmath.vector4(49.0/255,26.0/255,255.0/255,1))
+		    if overlay_shown then
+		    	overlay_shown = false
+		    	enhance_extension.hideOverlayAd()
+		    else
+			    if enhance_extension.isOverlayAdReady() then
+			    	overlay_shown = true
+				    enhance_extension.showOverlayAd("bottom")
+				end
+			end
+        end
+    end
+        
+    if action_id == hash("touch") and gui.pick_node(gui.get_node("btn_logevent"), action.x, action.y) then
+        if action.pressed then
+			gui.set_color(gui.get_node("btn_logevent"), vmath.vector4(0.7*49.0/255,0.7*26.0/255,0.7*255.0/255,1))
+        elseif action.released then
+		    gui.set_color(gui.get_node("btn_logevent"), vmath.vector4(49.0/255,26.0/255,255.0/255,1))
+			enhance_extension.logCustomEvent("defold_event")
+        end
+    end
+end
+
+function on_reload(self)
+    -- Add input-handling code here
+    -- Remove this function if not needed
+end
