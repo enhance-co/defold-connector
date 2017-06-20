@@ -16,11 +16,11 @@ Interstitial Ads are short static or video ads, usually shown between levels or 
 
 1) Check whether any ad is available:
 
-    is_ready = enhance.isInterstitialReady("default")
+       is_ready = enhance.isInterstitialReady("default")
 
 2) Show the ad:
     
-    enhance.showInterstitial("default")
+       enhance.showInterstitial("default")
 
 Note:
 Interstitial ads will automatically interrupt the flow of your application until the user completes interaction with the ad.
@@ -33,11 +33,11 @@ Rewarded Ads are usually video ads which pay high CPM for the users who view the
 
 1) Check whether any ad is available:
 
-    isReady = enhance_extension.isRewardedAdReady("neutral")
+       isReady = enhance_extension.isRewardedAdReady("neutral")
 
 2) Show the ad:
 
-    enhance.showRewardedAd("placement", on_reward_granted, on_reward_declined, on_reward_unavailable)
+       enhance.showRewardedAd("placement", on_reward_granted, on_reward_declined, on_reward_unavailable)
 
 Note:
 Rewarded ads will automatically interrupt the flow of your application until the user completes interaction with the ad.
@@ -50,21 +50,21 @@ Banner Ads are small sized ads displayed in the top or bottom of the app.
 
 1) Check whether any ad is available:
 
-    isReady = enhance.isBannerAdReady(optionalPlacement)
+       isReady = enhance.isBannerAdReady(optionalPlacement)
 
 2) Display the ad:
 
-    enhance.showBannerAd("placement", "position");
-    enhance.showBannerAd("position");
+       enhance.showBannerAd("placement", "position");
+       enhance.showBannerAd("position");
 
     Available positions:
 
-    "top"
-    "bottom"
+       "top"
+       "bottom"
 
 3) Hide the ad:
 
-    enhance.hideBannerAd()
+       enhance.hideBannerAd()
 
 Note:
 You can also integrate Fixed Banner Ads through Enhance ZeroCode with no coding at all.
@@ -77,11 +77,11 @@ Offer Walls show full screen of real world offers(e.g. surveys), usually with re
 
 1) Check whether any offer wall is available:
 
-    isReady = enhance.isOfferwallReady(optionalPlacement)
+       isReady = enhance.isOfferwallReady(optionalPlacement)
 
 2) Display the offer wall:
 
-    enhance.showOfferwall(optionalPlacement)
+       enhance.showOfferwall(optionalPlacement)
 
 Note:
 Offer walls will automatically interrupt the flow of your application until the user completes interaction with the offer wall.
@@ -94,11 +94,11 @@ Special offers are real world offers(e.g. surveys). They are available through E
 
 1) Check whether any special offer is available:
 
-    isReady = enhance.isSpecialOfferReady(optionalPlacement)
+       isReady = enhance.isSpecialOfferReady(optionalPlacement)
 
 2) Display the special offer:
 
-    enhance.showSpecialOffer(optionalPlacement)
+       enhance.showSpecialOffer(optionalPlacement)
 
 Note:
 Special Offers will automatically interrupt the flow of your application until the user completes interaction with the special offer.
@@ -110,11 +110,11 @@ Enhance can hook into various analytics networks. By default it will track sessi
 
 1) Send a simple analytics event:
 
-    enhance.logCustomEvent("event_name")
+       enhance.logCustomEvent("event_name")
 
 2) Send a detailed analytics event:
 
-    enhance.logCustomEvent("game_over", "level", "10")
+       enhance.logCustomEvent("game_over", "level", "10")
 
 
 Local Notifications
@@ -124,15 +124,15 @@ Local Notifications are reminders displayed on your mobile device's screen after
 
 1) Ask for local notifications permission:
 
-    enhance.requestLocalNotificationPermission(grantedCallback, refusedCallback)
+       enhance.requestLocalNotificationPermission(grantedCallback, refusedCallback)
 
 2) Enable a new local notification:
 
-    enhance.enableLocalNotification("Enhance", "Local Notification!", 5)
+       enhance.enableLocalNotification("Enhance", "Local Notification!", 5)
 
 3) Disable the local notification:
 
-    enhance.disableLocalNotification()
+       enhance.disableLocalNotification()
 
 
 Demo Project
