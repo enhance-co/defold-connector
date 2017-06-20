@@ -1,5 +1,5 @@
 [project]
-title = Enhance Defold
+title = Enhance Defold Connector
 version = 1
 
 [bootstrap]
@@ -26,3 +26,4 @@ bundle_identifier = co.enhance.defold
 
 [library]
 include_dirs = enhance_extension
+
