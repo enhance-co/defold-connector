@@ -1,9 +1,0 @@
-images {
-  image: "/main/images/enhance.png"
-}
-images {
-  image: "/main/images/button.png"
-}
-margin: 0
-extrude_borders: 0
-inner_padding: 0
