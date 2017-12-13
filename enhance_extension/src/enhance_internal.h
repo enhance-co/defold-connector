@@ -151,7 +151,9 @@ extern "C" {
    const char* Defold_EnhanceInAppPurchases_getDisplayPrice(const char *str_sku, const char *str_default_price);
    bool Defold_EnhanceInAppPurchases_isItemOwned(const char *str_sku);
    int Defold_EnhanceInAppPurchases_getOwnedItemCount(const char *str_sku);
-   void Defold_EnhanceInAppPurchases_restorePurchases(EnhanceListener *pSuccess, EnhanceListener *pFailed);
+   void Defold_EnhanceInAppPurchases_manuallyRestorePurchases(EnhanceListener *callback_onRestoreSuccess, EnhanceListener *callback_onRestoreFailed);
+   const char* Defold_EnhanceInAppPurchases_getDisplayTitle(const char *str_sku, const char *str_default_title);
+   const char* Defold_EnhanceInAppPurchases_getDisplayDescription(const char *str_sku, const char *str_default_description);
 }
 
 #endif /* _ENHANCE_INTERNAL_H */

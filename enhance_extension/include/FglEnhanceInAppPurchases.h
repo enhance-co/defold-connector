@@ -1,18 +1,5 @@
 #import <Foundation/Foundation.h>
-
-@protocol PurchaseDelegate<NSObject>
-
--(void)onPurchaseSuccess;
--(void)onPurchaseFailed;
-
-@end
-
-@protocol RestoreDelegate<NSObject>
-
--(void)onRestoreSuccess;
--(void)onRestoreFailed;
-
-@end
+#import "EnhanceInAppPurchases.h"
 
 @interface FglEnhanceInAppPurchases : NSObject {
 }

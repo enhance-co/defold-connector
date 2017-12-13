@@ -3,6 +3,8 @@
 #include "enhance_internal.h"
 #include "FglEnhance.h"
 #include "FglEnhanceInAppPurchases.h"
+#include "Enhance.h"
+#include "EnhanceInAppPurchases.h"
 
 static EnhanceListener *g_pInterstitialCompleted;
 static EnhanceListener *g_pCurrencyGranted;
@@ -15,8 +17,10 @@ static EnhanceListener *g_pPurchaseSuccess;
 static EnhanceListener *g_pPurchaseFailed;
 static EnhanceListener *g_pRestoreSuccess;
 static EnhanceListener *g_pRestoreFailed;
+static EnhanceListener *g_pConsumeSuccess;
+static EnhanceListener *g_pConsumeFailed;
 
-@interface DefoldEnhanceDelegate : NSObject<InterstitialDelegate, RewardDelegate, CurrencyGrantedDelegate, PermissionDelegate, RestoreDelegate> {
+@interface DefoldEnhanceDelegate : NSObject<InterstitialDelegate, RewardDelegate, CurrencyGrantedDelegate, PermissionDelegate, RestoreDelegate, ConsumeDelegate> {
 }
 @end
 
@@ -98,6 +102,20 @@ static EnhanceListener *g_pRestoreFailed;
    }
 }
 
+-(void)onConsumeSuccess {
+   dmLogInfo("EnhanceDefold[iOS]: onConsumeSuccess");
+   if(g_pConsumeSuccess) {
+      g_pConsumeSuccess->callWithNoParam();
+   }
+}
+
+-(void)onConsumeFailed {
+   dmLogInfo("EnhanceDefold[iOS]: onConsumeFailed");
+   if(g_pConsumeFailed) {
+      g_pConsumeFailed->callWithNoParam();
+   }
+}
+
 @end
 
 static DefoldEnhanceDelegate *g_delegate;
@@ -108,7 +126,7 @@ void Defold_Enhance_Initialize() {
 }
 
 bool Defold_Enhance_isEnhanced() {
-   return [[FglEnhance sharedInstance] isEnhanced];
+   return [Enhance isEnhanced];
 }
 
 void Defold_Enhance_setInterstitialCallback(EnhanceListener *pCompleted) {
@@ -122,7 +140,7 @@ void Defold_Enhance_setCurrencyCallback(EnhanceListener *pGranted) {
 bool Defold_Enhance_isInterstitialReady(const char *pszPlacement) {
    NSString *placement = [NSString stringWithUTF8String:pszPlacement];
    
-   return [[FglEnhance sharedInstance] isInterstitialReady:placement];
+   return [Enhance isInterstitialReady:placement];
 }
 
 void Defold_Enhance_showInterstitial(const char *pszPlacement) {
@@ -131,13 +149,13 @@ void Defold_Enhance_showInterstitial(const char *pszPlacement) {
    [[FglEnhance sharedInstance] setInterstitialDelegate:g_delegate];
    
    dmLogInfo("EnhanceDefold[iOS]: show interstitial");
-   [[FglEnhance sharedInstance] showInterstitial:placement];
+   [Enhance showInterstitialAd:placement];
 }
 
 bool Defold_Enhance_isRewardedAdReady(const char *pszPlacement) {
    NSString *placement = [NSString stringWithUTF8String:pszPlacement];
    
-   return [[FglEnhance sharedInstance] isRewardedAdReady];
+   return [Enhance isRewardedAdReady:placement];
 }
 
 void Defold_Enhance_showRewardedAd(const char *pszPlacement, EnhanceListener *pGranted, EnhanceListener *pDeclined, EnhanceListener *pUnavailable) {
@@ -148,29 +166,29 @@ void Defold_Enhance_showRewardedAd(const char *pszPlacement, EnhanceListener *pG
    g_pRewardUnavailable = pUnavailable;
    
    dmLogInfo("EnhanceDefold[iOS]: show rewarded ad");
-   [[FglEnhance sharedInstance] showRewardedAd:g_delegate placement:placement];
+   [Enhance showRewardedAd:g_delegate placement:placement];
 }
 
 bool Defold_Enhance_isOfferwallReady(const char *pszPlacement) {
    NSString *placement = [NSString stringWithUTF8String:pszPlacement];
-   return [[FglEnhance sharedInstance] isOfferwallReady:placement];
+   return [Enhance isOfferwallReady:placement];
 }
 
 void Defold_Enhance_showOfferwall(const char *pszPlacement) {
    dmLogInfo("EnhanceDefold[iOS]: show offerwall");
    NSString *placement = [NSString stringWithUTF8String:pszPlacement];
-   [[FglEnhance sharedInstance] showOfferwall:placement];
+   [Enhance showOfferwall:placement];
 }
 
 bool Defold_Enhance_isSpecialOfferReady(const char *pszPlacement) {
    NSString *placement = [NSString stringWithUTF8String:pszPlacement];
-   return [[FglEnhance sharedInstance] isSpecialOfferReady:placement];
+   return [Enhance isSpecialOfferReady:placement];
 }
 
 void Defold_Enhance_showSpecialOffer(const char *pszPlacement) {
    dmLogInfo("EnhanceDefold[iOS]: show special offer");
    NSString *placement = [NSString stringWithUTF8String:pszPlacement];
-   [[FglEnhance sharedInstance] showSpecialOffer:placement];
+   [Enhance showSpecialOffer:placement];
 }
 
 bool Defold_Enhance_isFullscreenAdShowing() {
@@ -179,7 +197,7 @@ bool Defold_Enhance_isFullscreenAdShowing() {
 
 bool Defold_Enhance_isBannerAdReady(const char *pszPlacement) {
    NSString *placement = [NSString stringWithUTF8String:pszPlacement];
-   return [[FglEnhance sharedInstance] isBannerAdReady:placement];
+   return [Enhance isBannerAdReady:placement];
 }
 
 void Defold_Enhance_showBannerAd(const char *pszPlacement, const char *pszPosition) {
@@ -192,12 +210,12 @@ void Defold_Enhance_showBannerAd(const char *pszPlacement, const char *pszPositi
 
    NSString *placement = [NSString stringWithUTF8String:pszPlacement];
 
-   [[FglEnhance sharedInstance] showBannerAd:placement position:pos];
+   [Enhance showBannerAdWithPosition:placement position:pos];
 }
 
 void Defold_Enhance_hideBannerAd() {
    dmLogInfo("EnhanceDefold[iOS]: hide banner ad");
-   [[FglEnhance sharedInstance] hideBannerAd];
+   [Enhance hideBannerAd];
 }
 
 void Defold_Enhance_logCustomEvent(const char *pszEventName, const char *pszParamKey, const char *pszParamValue) {
@@ -207,10 +225,10 @@ void Defold_Enhance_logCustomEvent(const char *pszEventName, const char *pszPara
       NSString *paramKey = [NSString stringWithUTF8String:pszParamKey];
       NSString *paramValue = [NSString stringWithUTF8String:pszParamValue];
       
-      [[FglEnhance sharedInstance] logEvent:eventName withParameter:paramKey andValue:paramValue];
+      [Enhance logEvent:eventName withParameter:paramKey andValue:paramValue];
    }
    else {
-      [[FglEnhance sharedInstance] logEvent:eventName];
+      [Enhance logEvent:eventName];
    }
 }
 
@@ -218,7 +236,7 @@ void Defold_Enhance_requestLocalNotificationPermission(EnhanceListener *pGranted
    g_pPermissionGranted = pGranted;
    g_pPermissionRefused = pRefused;
    
-   [[FglEnhance sharedInstance] requestLocalNotificationPermission:g_delegate];
+   [Enhance requestLocalNotificationPermission:g_delegate];
 }
 
 void Defold_Enhance_enableLocalNotification(const char *pszTitle, const char *pszMessage, int delay) {
@@ -226,12 +244,12 @@ void Defold_Enhance_enableLocalNotification(const char *pszTitle, const char *ps
    NSString *msg = [NSString stringWithUTF8String:pszMessage];
    
    dmLogInfo("EnhanceDefold[iOS]: enable local notification title: %s message: %s delay:%d", pszTitle, pszMessage, delay);
-   [[FglEnhance sharedInstance] enableLocalNotificationWithTitle:title message:msg delay:delay];
+   [Enhance enableLocalNotificationWithTitle:title message:msg delay:delay];
 }
 
 void Defold_Enhance_disableLocalNotification() {
    dmLogInfo("EnhanceDefold[iOS]: disable local notification");
-   [[FglEnhance sharedInstance] disableLocalNotification];
+   [Enhance disableLocalNotification];
 }
 
 void Defold_Enhance_pumpEvents() {
@@ -239,7 +257,7 @@ void Defold_Enhance_pumpEvents() {
 }
 
 bool Defold_EnhanceInAppPurchases_isSupported() {
-   return   [[FglEnhanceInAppPurchases sharedInstance] isSupported];
+   return [[Enhance purchases] isSupported];
 }
 
 void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed) {
@@ -249,36 +267,59 @@ void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceLi
    
    g_pPurchaseSuccess = callback_onPurchaseSuccess;
    g_pPurchaseFailed = callback_onPurchaseFailed;
-   [[FglEnhanceInAppPurchases sharedInstance] attemptPurchase:sku delegate:g_delegate];
+   [[Enhance purchases] attemptPurchase:sku delegate:g_delegate];
 }
 
 void Defold_EnhanceInAppPurchases_consume(const char *str_sku, EnhanceListener *callback_onConsumeSuccess, EnhanceListener *callback_onConsumeFailed) {
    dmLogInfo("EnhanceDefold[iOS]: consume");
 
+   NSString *sku = [NSString stringWithUTF8String:str_sku];
+
+   g_pConsumeSuccess = callback_onConsumeSuccess;
+   g_pConsumeFailed = callback_onConsumeFailed;
+
+   [[Enhance purchases] consume:sku delegate:g_delegate];
 }
 
 const char*  Defold_EnhanceInAppPurchases_getDisplayPrice(const char *str_sku, const char *str_default_price) {
    NSString *sku = [NSString stringWithUTF8String:str_sku];
    NSString *default_price = [NSString stringWithUTF8String:str_default_price];
-   NSString *result = [[FglEnhanceInAppPurchases sharedInstance] getDisplayPrice:sku defaultPrice:default_price];
+   NSString *result = [[Enhance purchases] getDisplayPrice:sku defaultPrice:default_price];
    
    return [result UTF8String];
 }
 
 bool Defold_EnhanceInAppPurchases_isItemOwned(const char *str_sku) {
    NSString *sku = [NSString stringWithUTF8String:str_sku];
-   return [[FglEnhanceInAppPurchases sharedInstance] isItemOwned:sku];
+   return [[Enhance purchases] isItemOwned:sku];
 }
 
 int Defold_EnhanceInAppPurchases_getOwnedItemCount(const char *str_sku) {
-   return 0;
+   NSString *sku = [NSString stringWithUTF8String:str_sku];
+   return [[Enhance purchases] getOwnedItemCount:sku];
 }
 
-void Defold_EnhanceInAppPurchases_restorePurchases(EnhanceListener *pSuccess, EnhanceListener *pFailed){
-   g_pRestoreSuccess = pSuccess;
-   g_pRestoreFailed = pFailed;
-   
-   [[FglEnhanceInAppPurchases sharedInstance] restorePurchases:g_delegate];
+void Defold_EnhanceInAppPurchases_manuallyRestorePurchases(EnhanceListener *callback_onRestoreSuccess, EnhanceListener *callback_onRestoreFailed) {
+   g_pRestoreSuccess = callback_onRestoreSuccess;
+   g_pRestoreFailed = callback_onRestoreFailed;
+
+   [[Enhance purchases] manuallyRestorePurchases:g_delegate];
+}
+
+const char* Defold_EnhanceInAppPurchases_getDisplayTitle(const char *str_sku, const char *str_default_title) {
+   NSString *sku = [NSString stringWithUTF8String:str_sku];
+   NSString *default_title = [NSString stringWithUTF8String:str_default_title];
+   NSString *result = [[Enhance purchases] getDisplayTitle:sku defaultTitle:default_title];
+
+   return [result UTF8String];
+}
+
+const char* Defold_EnhanceInAppPurchases_getDisplayDescription(const char *str_sku, const char *str_default_description) {
+   NSString *sku = [NSString stringWithUTF8String:str_sku];
+   NSString *default_desc = [NSString stringWithUTF8String:str_default_description];
+   NSString *result = [[Enhance purchases] getDisplayDescription:sku defaultDescription:default_desc];
+
+   return [result UTF8String];
 }
 
 #endif

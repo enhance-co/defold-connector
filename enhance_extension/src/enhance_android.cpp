@@ -29,19 +29,22 @@ static EnhanceListener *g_callback_onPurchaseSuccess;
 static EnhanceListener *g_callback_onPurchaseFailed;
 static EnhanceListener *g_callback_onConsumeSuccess;
 static EnhanceListener *g_callback_onConsumeFailed;
+static EnhanceListener *g_callback_onRestoreSuccess;
+static EnhanceListener *g_callback_onRestoreFailed;
 
 /** Java class names of the Enhance connector */
-#define INTERNAL_JAVA_CLASS "com.fgl.enhance.connector.Internal"
-#define ENHANCE_JAVA_CLASS "com.fgl.enhance.connector.FglEnhance"
+#define INTERNAL_JAVA_CLASS "co.enhance.Internal"
+#define ENHANCE_JAVA_CLASS "co.enhance.Enhance"
 #define ENHANCEPLUS_JAVA_CLASS "com.fgl.enhance.connector.FglEnhancePlus"
-#define ENHANCEINAPPURCHASES_JAVA_CLASS "com.fgl.enhance.connector.FglEnhanceInAppPurchases"
+#define ENHANCEINAPPURCHASES_JAVA_CLASS "co.enhance.EnhanceInAppPurchases"
+#define OLD_ENHANCE_JAVA_CLASS "com.fgl.enhance.connector.FglEnhance"
 
 /* Log info messages to the adb console */
 #define LOGI(...) ((void)__android_log_print (ANDROID_LOG_INFO, "fgl.sdk.enhance", __VA_ARGS__))
 
 extern "C" {
    /* Native callbacks for the java connector */
-   JNIEXPORT void JNICALL Java_com_fgl_enhance_connector_fglenhancejni_onEnhanceEvent(JNIEnv * env, jobject obj, int nSdkEvent, jobject strParam, int intParam0, int intParam1, int intParam2);
+   JNIEXPORT void JNICALL Java_co_enhance_fglenhancejni_onEnhanceEvent(JNIEnv * env, jobject obj, int nSdkEvent, jobject strParam, int intParam0, int intParam1, int intParam2);
 };
 
 /** Java VM instance */
@@ -53,16 +56,18 @@ static pthread_mutex_t g_nEventsMutex;
 /** Event type */
 
 enum EventType {
-	ENHANCE_EVENT_NONE = 0,
-	ENHANCE_EVENT_REWARD_GRANTED = 1,
-	ENHANCE_EVENT_REWARD_DECLINED = 2,
-	ENHANCE_EVENT_REWARD_UNAVAILABLE = 3,
-	ENHANCE_EVENT_CURRENCY_GRANTED = 4,
-	ENHANCE_EVENT_PURCHASE_SUCCEEDED = 5,
-	ENHANCE_EVENT_PURCHASE_FAILED = 6,
-	ENHANCE_EVENT_CONSUME_SUCCEEDED = 7,
-	ENHANCE_EVENT_CONSUME_FAILED = 8,
-   ENHANCE_EVENT_INTERSTITIAL_COMPLETED = 9,
+    ENHANCE_EVENT_NONE = 0,
+    ENHANCE_EVENT_REWARD_GRANTED = 1,
+    ENHANCE_EVENT_REWARD_DECLINED = 2,
+    ENHANCE_EVENT_REWARD_UNAVAILABLE = 3,
+    ENHANCE_EVENT_CURRENCY_GRANTED = 4,
+    ENHANCE_EVENT_PURCHASE_SUCCEEDED = 5,
+    ENHANCE_EVENT_PURCHASE_FAILED = 6,
+    ENHANCE_EVENT_CONSUME_SUCCEEDED = 7,
+    ENHANCE_EVENT_CONSUME_FAILED = 8,
+    ENHANCE_EVENT_INTERSTITIAL_COMPLETED = 9,
+    ENHANCE_EVENT_RESTORE_SUCCESS = 10,
+    ENHANCE_EVENT_RESTORE_FAILED = 11,
 };
 
 /** Received event */
@@ -138,7 +143,7 @@ struct AttachScope
 
 /** Native callback invoked by the Enhance java connector when an event occurs */
 
-JNIEXPORT void JNICALL Java_com_fgl_enhance_connector_fglenhancejni_onEnhanceEvent(JNIEnv * env, jobject obj, int nEventType, jobject strParam, int intParam0, int intParam1, int intParam2) {
+JNIEXPORT void JNICALL Java_co_enhance_fglenhancejni_onEnhanceEvent(JNIEnv * env, jobject obj, int nEventType, jobject strParam, int intParam0, int intParam1, int intParam2) {
    JNIEnv *threadEnv = NULL;
    const char *lpJavaStr = NULL;
    received_event_t *lpNewEvent;
@@ -146,7 +151,7 @@ JNIEXPORT void JNICALL Java_com_fgl_enhance_connector_fglenhancejni_onEnhanceEve
    threadEnv = env;
    
    if (strParam)
-	  lpJavaStr = threadEnv->GetStringUTFChars ((jstring) strParam, NULL);
+      lpJavaStr = threadEnv->GetStringUTFChars ((jstring) strParam, NULL);
 
    /* Add event to list, with thread safety */
    
@@ -171,7 +176,7 @@ JNIEXPORT void JNICALL Java_com_fgl_enhance_connector_fglenhancejni_onEnhanceEve
    pthread_mutex_unlock (&g_nEventsMutex);
 
    if (strParam)
-	threadEnv->ReleaseStringUTFChars ((jstring) strParam, lpJavaStr);
+    threadEnv->ReleaseStringUTFChars ((jstring) strParam, lpJavaStr);
 }
 
 /**
@@ -343,10 +348,10 @@ bool enhanceJniCallStrRetBool(const char *lpszClassName, const char *lpszMethodN
  * @param lpszMethodName name of method to call
  * @param lpszParam1 parameter 1
  *
- * @return bool value
+ * @return int value
  */
 
-bool enhanceJniCallStrRetInt(const char *lpszClassName, const char *lpszMethodName, const char *lpszParam1) {
+int enhanceJniCallStrRetInt(const char *lpszClassName, const char *lpszMethodName, const char *lpszParam1) {
    JNIEnv *threadEnv = NULL;
    jobject strParam1;
    jclass enhanceJNIClass;
@@ -358,14 +363,14 @@ bool enhanceJniCallStrRetInt(const char *lpszClassName, const char *lpszMethodNa
     
    strParam1 = threadEnv->NewStringUTF (lpszParam1);
    
-   enhanceJNIClass = threadEnv->FindClass (lpszClassName);
+   enhanceJNIClass = GetClass(threadEnv, lpszClassName);
    if (enhanceJNIClass) {
       methodId = threadEnv->GetStaticMethodID (enhanceJNIClass, lpszMethodName, "(Ljava/lang/String;)I");
       if (methodId != 0) {
          jint javaResult = threadEnv->CallStaticIntMethod (enhanceJNIClass, methodId, strParam1);
          
          if (javaResult)
-			 nResult = javaResult;
+             nResult = javaResult;
          
          threadEnv->DeleteLocalRef (enhanceJNIClass);
       }
@@ -618,7 +623,7 @@ void enhanceJniCallVoidRetString (const char *lpszClassName, const char *lpszMet
             
             if (lpStrResult) {
                strncpy (lpBuffer, lpStrResult, nBufferSize - 1);
-			   lpBuffer[nBufferSize - 1] = 0;
+               lpBuffer[nBufferSize - 1] = 0;
             }
             
             threadEnv->ReleaseStringUTFChars (strResult, lpStrResult);
@@ -674,7 +679,7 @@ void enhanceJniCallStrRetString (const char *lpszClassName, const char *lpszMeth
             
             if (lpStrResult) {
                strncpy (lpBuffer, lpStrResult, nBufferSize - 1);
-			   lpBuffer[nBufferSize - 1] = 0;
+               lpBuffer[nBufferSize - 1] = 0;
             }
             
             threadEnv->ReleaseStringUTFChars (strResult, lpStrResult);
@@ -734,7 +739,7 @@ void enhanceJniCallStrStrRetString (const char *lpszClassName, const char *lpszM
             
             if (lpStrResult) {
                strncpy (lpBuffer, lpStrResult, nBufferSize - 1);
-			   lpBuffer[nBufferSize - 1] = 0;
+               lpBuffer[nBufferSize - 1] = 0;
             }
             
             threadEnv->ReleaseStringUTFChars (strResult, lpStrResult);
@@ -780,7 +785,7 @@ int enhanceJniCallVoidRetInt(const char *lpszClassName, const char *lpszMethodNa
          jint javaResult = threadEnv->CallStaticIntMethod (enhanceJNIClass, methodId);
          
          if (javaResult)
-			 nResult = javaResult;
+             nResult = javaResult;
          
          threadEnv->DeleteLocalRef (enhanceJNIClass);
       }
@@ -799,109 +804,120 @@ int enhanceJniCallVoidRetInt(const char *lpszClassName, const char *lpszMethodNa
  * Pump Enhance events. Call this every frame from your app thread to receive callbacks
  */
 JNIEXPORT void FglEnhance_pumpEvents(void) {
-	int nEventType;
+    int nEventType;
 
-	do {
-		int intParam[3];
-		const char *lpszStrParam = NULL;
-		char g_szStrParam[256];
+    do {
+        int intParam[3];
+        const char *lpszStrParam = NULL;
+        char g_szStrParam[256];
 
-		nEventType = ENHANCE_EVENT_NONE;
-		g_szStrParam[0] = 0;
+        nEventType = ENHANCE_EVENT_NONE;
+        g_szStrParam[0] = 0;
 
-		pthread_mutex_lock(&g_nEventsMutex);
+        pthread_mutex_lock(&g_nEventsMutex);
 
-		if (g_firstEvent != NULL) {
-			received_event_t *received = g_firstEvent;
+        if (g_firstEvent != NULL) {
+            received_event_t *received = g_firstEvent;
 
-			/* Pop event at the head of the list*/
+            /* Pop event at the head of the list*/
 
-			if (received->prev)
-				received->prev->next = received->next;
-			if (received->next)
-				received->next->prev = received->prev;
-			if (received == g_firstEvent)
-				g_firstEvent = received->next;
-			if (received == g_lastEvent)
-				g_lastEvent = received->prev;
+            if (received->prev)
+                received->prev->next = received->next;
+            if (received->next)
+                received->next->prev = received->prev;
+            if (received == g_firstEvent)
+                g_firstEvent = received->next;
+            if (received == g_lastEvent)
+                g_lastEvent = received->prev;
 
-			nEventType = received->nEventType;
-			intParam[0] = received->intParam[0];
-			intParam[1] = received->intParam[1];
-			intParam[2] = received->intParam[2];
-			if (received->lpszStrParam) {
-				/* String parameter received */
-				strncpy(g_szStrParam, received->lpszStrParam, 255);
-				g_szStrParam[255] = 0;
-				lpszStrParam = g_szStrParam;
-				free((void *)received->lpszStrParam);
-			}
-			delete received;
-			received = NULL;
-		}
+            nEventType = received->nEventType;
+            intParam[0] = received->intParam[0];
+            intParam[1] = received->intParam[1];
+            intParam[2] = received->intParam[2];
+            if (received->lpszStrParam) {
+                /* String parameter received */
+                strncpy(g_szStrParam, received->lpszStrParam, 255);
+                g_szStrParam[255] = 0;
+                lpszStrParam = g_szStrParam;
+                free((void *)received->lpszStrParam);
+            }
+            delete received;
+            received = NULL;
+        }
 
-		pthread_mutex_unlock(&g_nEventsMutex);
+        pthread_mutex_unlock(&g_nEventsMutex);
 
-		switch (nEventType) {
-		case ENHANCE_EVENT_INTERSTITIAL_COMPLETED:
-		   dmLogInfo("EnhanceDefold[android]: onInterstitialCompleted");
-		   if (g_pInterstitialCompleted)
-		      g_pInterstitialCompleted->callWithNoParam();
-			break;
+        switch (nEventType) {
+            case ENHANCE_EVENT_INTERSTITIAL_COMPLETED:
+               dmLogInfo("EnhanceDefold[android]: onInterstitialCompleted");
+               if (g_pInterstitialCompleted)
+                  g_pInterstitialCompleted->callWithNoParam();
+                break;
 
-		case ENHANCE_EVENT_REWARD_GRANTED:
-			dmLogInfo("EnhanceDefold[android]: onRewardGranted");
-   				if (g_pRewardGranted)
-   					g_pRewardGranted->callWithIntStrParam(intParam[0], intParam[1] ? "REWARDTYPE_COINS" : "REWARDTYPE_ITEM");
-			break;
+            case ENHANCE_EVENT_REWARD_GRANTED:
+                dmLogInfo("EnhanceDefold[android]: onRewardGranted");
+                    if (g_pRewardGranted)
+                        g_pRewardGranted->callWithIntStrParam(intParam[0], intParam[1] ? "REWARDTYPE_COINS" : "REWARDTYPE_ITEM");
+                break;
 
-		case ENHANCE_EVENT_REWARD_DECLINED:
-		   dmLogInfo("EnhanceDefold[android]: onRewardDeclined");
-		   if (g_pRewardDeclined) {
-		      g_pRewardDeclined->callWithNoParam();
-		   }
-			break;
+            case ENHANCE_EVENT_REWARD_DECLINED:
+               dmLogInfo("EnhanceDefold[android]: onRewardDeclined");
+               if (g_pRewardDeclined) {
+                  g_pRewardDeclined->callWithNoParam();
+               }
+                break;
 
-		case ENHANCE_EVENT_REWARD_UNAVAILABLE:
-		   dmLogInfo("EnhanceDefold[android]: onRewardUnavailable");
-		   if (g_pRewardUnavailable) {
-		      g_pRewardUnavailable->callWithNoParam();
-		   }
-			break;
+            case ENHANCE_EVENT_REWARD_UNAVAILABLE:
+               dmLogInfo("EnhanceDefold[android]: onRewardUnavailable");
+               if (g_pRewardUnavailable) {
+                  g_pRewardUnavailable->callWithNoParam();
+               }
+                break;
 
-		case ENHANCE_EVENT_CURRENCY_GRANTED:
-			dmLogInfo("EnhanceDefold[android]: onCurrencyGranted: %d", intParam[0]);
-		   	if (g_pCurrencyGranted)
-		      	g_pCurrencyGranted->callWithIntParam(intParam[0]);
-			break;
+            case ENHANCE_EVENT_CURRENCY_GRANTED:
+                dmLogInfo("EnhanceDefold[android]: onCurrencyGranted: %d", intParam[0]);
+                if (g_pCurrencyGranted)
+                    g_pCurrencyGranted->callWithIntParam(intParam[0]);
+                break;
 
-		
-		case ENHANCE_EVENT_PURCHASE_SUCCEEDED:
-			dmLogInfo("EnhanceDefold[android]: onPurchaseSuccess");
-			if (g_callback_onPurchaseSuccess)
-				g_callback_onPurchaseSuccess->callWithNoParam();
-			break;
+            
+            case ENHANCE_EVENT_PURCHASE_SUCCEEDED:
+                dmLogInfo("EnhanceDefold[android]: onPurchaseSuccess");
+                if (g_callback_onPurchaseSuccess)
+                    g_callback_onPurchaseSuccess->callWithNoParam();
+                break;
 
-		case ENHANCE_EVENT_PURCHASE_FAILED:
-			dmLogInfo("EnhanceDefold[android]: onPurchaseFailed");
-			if (g_callback_onPurchaseFailed)
-			g_callback_onPurchaseFailed->callWithNoParam();
-			break;
+            case ENHANCE_EVENT_PURCHASE_FAILED:
+                dmLogInfo("EnhanceDefold[android]: onPurchaseFailed");
+                if (g_callback_onPurchaseFailed)
+                g_callback_onPurchaseFailed->callWithNoParam();
+                break;
 
-		case ENHANCE_EVENT_CONSUME_SUCCEEDED:
-			dmLogInfo("EnhanceDefold[android]: onConsumeSuccess");
-			if (g_callback_onConsumeSuccess)
-				g_callback_onConsumeSuccess->callWithNoParam();
-			break;
+            case ENHANCE_EVENT_CONSUME_SUCCEEDED:
+                dmLogInfo("EnhanceDefold[android]: onConsumeSuccess");
+                if (g_callback_onConsumeSuccess)
+                    g_callback_onConsumeSuccess->callWithNoParam();
+                break;
 
-		case ENHANCE_EVENT_CONSUME_FAILED:
-			dmLogInfo("EnhanceDefold[android]: onConsumeFailed");
-			if (g_callback_onConsumeFailed)
-				g_callback_onConsumeFailed->callWithNoParam();
-			break; 
-		
-		}
-	} while (nEventType != ENHANCE_EVENT_NONE);
+            case ENHANCE_EVENT_CONSUME_FAILED:
+                dmLogInfo("EnhanceDefold[android]: onConsumeFailed");
+                if (g_callback_onConsumeFailed)
+                    g_callback_onConsumeFailed->callWithNoParam();
+                break;
+
+            case ENHANCE_EVENT_RESTORE_SUCCESS:
+                dmLogInfo("EnhanceDefold[android]: onRestoreSuccess");
+                if(g_callback_onRestoreSuccess)
+                    g_callback_onRestoreSuccess->callWithNoParam();
+                break;
+
+            case ENHANCE_EVENT_RESTORE_FAILED:
+                dmLogInfo("EnhanceDefold[android]: onRestoreFailed");
+                if(g_callback_onRestoreFailed)
+                    g_callback_onRestoreFailed->callWithNoParam();
+                break;
+        }
+    } while (nEventType != ENHANCE_EVENT_NONE);
 }
 
 /**
@@ -912,8 +928,8 @@ JNIEXPORT void FglEnhance_pumpEvents(void) {
  * @return true if injected, false if not
  */
 JNIEXPORT bool Defold_Enhance_isEnhanced (void) {
-	LOGI ("Enhance: Defold_Enhance_isEnhanced");
-	return enhanceJniCallVoidRetBool(ENHANCE_JAVA_CLASS, "isEnhanced");
+    LOGI ("Enhance: Defold_Enhance_isEnhanced");
+    return enhanceJniCallVoidRetBool(ENHANCE_JAVA_CLASS, "isEnhanced");
 }
 
 /**
@@ -933,7 +949,7 @@ JNIEXPORT void Defold_Enhance_setInterstitialCallback(EnhanceListener *pComplete
  * @return true if ready, false if not
  */
 JNIEXPORT bool Defold_Enhance_isInterstitialReady (const char *str_placement) {
-	return enhanceJniCallStrRetBool(ENHANCE_JAVA_CLASS, "isInterstitialReady", str_placement);
+    return enhanceJniCallStrRetBool(ENHANCE_JAVA_CLASS, "isInterstitialReady", str_placement);
 }
 
 /**
@@ -942,7 +958,7 @@ JNIEXPORT bool Defold_Enhance_isInterstitialReady (const char *str_placement) {
  * @param str_placement placement to show interstitial for, NULL for default placement
  */
 JNIEXPORT void Defold_Enhance_showInterstitial (const char *str_placement) {
-	enhanceJniCallStrRetVoid(ENHANCE_JAVA_CLASS, "showInterstitialAd", str_placement);
+    enhanceJniCallStrRetVoid(ENHANCE_JAVA_CLASS, "showInterstitialAd", str_placement);
 }
 
 /**
@@ -953,7 +969,7 @@ JNIEXPORT void Defold_Enhance_showInterstitial (const char *str_placement) {
  * @return true if ready, false if not
  */
 JNIEXPORT bool Defold_Enhance_isRewardedAdReady(const char *str_placement) {
-	return enhanceJniCallStrRetBool(ENHANCE_JAVA_CLASS, "isRewardedAdReady", str_placement);
+    return enhanceJniCallStrRetBool(ENHANCE_JAVA_CLASS, "isRewardedAdReady", str_placement);
 }
 
 /**
@@ -965,13 +981,13 @@ JNIEXPORT bool Defold_Enhance_isRewardedAdReady(const char *str_placement) {
  * @param callback_onRewardUnavailable function called when a reward isn't available to show
  */
 JNIEXPORT void Defold_Enhance_showRewardedAd(const char *str_placement,
-											EnhanceListener *pGranted, 
-											EnhanceListener *pDeclined, 
-											EnhanceListener *pUnavailable) {
-   	g_pRewardGranted = pGranted;
-   	g_pRewardDeclined = pDeclined;
-   	g_pRewardUnavailable = pUnavailable;
-	enhanceJniCallStrRetVoid(INTERNAL_JAVA_CLASS, "showRewardedAdFromJNI", str_placement);
+                                            EnhanceListener *pGranted, 
+                                            EnhanceListener *pDeclined, 
+                                            EnhanceListener *pUnavailable) {
+    g_pRewardGranted = pGranted;
+    g_pRewardDeclined = pDeclined;
+    g_pRewardUnavailable = pUnavailable;
+    enhanceJniCallStrRetVoid(INTERNAL_JAVA_CLASS, "showRewardedAdFromJNI", str_placement);
 }
 
 /**
@@ -989,14 +1005,14 @@ JNIEXPORT void Defold_Enhance_setCurrencyCallback(EnhanceListener *pGranted) {
  * @return true if ready, false if not
  */
 JNIEXPORT bool Defold_Enhance_isSpecialOfferReady(const char *str_placement) {
-	return enhanceJniCallStrRetBool(ENHANCE_JAVA_CLASS, "isSpecialOfferReady", str_placement);
+    return enhanceJniCallStrRetBool(ENHANCE_JAVA_CLASS, "isSpecialOfferReady", str_placement);
 }
 
 /**
  * Show special offer
  */
 JNIEXPORT void Defold_Enhance_showSpecialOffer(const char *str_placement) {
-	enhanceJniCallStrRetVoid(ENHANCE_JAVA_CLASS, "showSpecialOffer", str_placement);
+    enhanceJniCallStrRetVoid(ENHANCE_JAVA_CLASS, "showSpecialOffer", str_placement);
 }
 
 /**
@@ -1005,14 +1021,14 @@ JNIEXPORT void Defold_Enhance_showSpecialOffer(const char *str_placement) {
  * @return true if ready, false if not
  */
 JNIEXPORT bool Defold_Enhance_isOfferwallReady(const char *str_placement) {
-	return enhanceJniCallStrRetBool(ENHANCE_JAVA_CLASS, "isOfferwallReady", str_placement);
+    return enhanceJniCallStrRetBool(ENHANCE_JAVA_CLASS, "isOfferwallReady", str_placement);
 }
 
 /**
  * Show offerwall
  */
 JNIEXPORT void Defold_Enhance_showOfferwall (const char *str_placement) {
-	enhanceJniCallStrRetVoid(ENHANCE_JAVA_CLASS, "showOfferwall", str_placement);
+    enhanceJniCallStrRetVoid(ENHANCE_JAVA_CLASS, "showOfferwall", str_placement);
 }
 
 /**
@@ -1023,16 +1039,17 @@ JNIEXPORT void Defold_Enhance_showOfferwall (const char *str_placement) {
  * @param str_paramValue optional parameter value, NULL for none
  */
 JNIEXPORT void Defold_Enhance_logCustomEvent(const char *str_eventType, const char *str_paramKey, const char *str_paramValue) {
-	enhanceJniCallStrStrStrRetVoid(ENHANCE_JAVA_CLASS, "logEvent", str_eventType, str_paramKey, str_paramValue);
+    enhanceJniCallStrStrStrRetVoid(ENHANCE_JAVA_CLASS, "logEvent", str_eventType, str_paramKey, str_paramValue);
 }
 
 /**
+ * @deprecated
  * Check if a fullscreen, modal ad is currently showing
  *
  * @return true if currently showing, false if not
  */
 JNIEXPORT bool Defold_Enhance_isFullscreenAdShowing() {
-	return enhanceJniCallVoidRetBool(ENHANCE_JAVA_CLASS, "isFullscreenAdShowing");
+    return enhanceJniCallVoidRetBool(OLD_ENHANCE_JAVA_CLASS, "isFullscreenAdShowing");
 }
 
 /**
@@ -1050,21 +1067,22 @@ JNIEXPORT bool Defold_Enhance_isBannerAdReady(const char *str_placement) {
  * @param position ad position (top or bottom)
  */
 JNIEXPORT void Defold_Enhance_showBannerAd(const char *str_placement, const char *pszPosition) {
-	enhanceJniCallStrStrRetVoid(ENHANCE_JAVA_CLASS, "showBannerAdWithPosition", str_placement, pszPosition);
+    enhanceJniCallStrStrRetVoid(INTERNAL_JAVA_CLASS, "showBannerAdWithPositionJNI", str_placement, pszPosition);
 }
 
 /**
  * Hide banner ad, if one is showing
  */
 JNIEXPORT void Defold_Enhance_hideBannerAd() {
-	enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "hideBannerAd");
+    enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "hideBannerAd");
 }
 
 /**
+ * @deprecated
  * Show a new ad in the banner, if one is showing
  */
 JNIEXPORT void Defold_Enhance_refreshBannerAd() {
-	enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "refreshBannerAd");
+    enhanceJniCallVoidRetVoid(OLD_ENHANCE_JAVA_CLASS, "refreshBannerAd");
 }
 
 /**
@@ -1074,7 +1092,7 @@ JNIEXPORT void Defold_Enhance_refreshBannerAd() {
 * @param callback_onPermissionRefused function called when the permission is declined
 */
 JNIEXPORT void Defold_Enhance_requestLocalNotificationPermission(EnhanceListener *pGranted,
-															 EnhanceListener *pRefused) {
+                                                             EnhanceListener *pRefused) {
    if (pGranted) 
       pGranted->callWithNoParam();
 }
@@ -1087,18 +1105,18 @@ JNIEXPORT void Defold_Enhance_requestLocalNotificationPermission(EnhanceListener
  * @param delay notification delay in seconds
  */
 JNIEXPORT void Defold_Enhance_enableLocalNotification(const char *str_title, const char *str_message, int delay){
-	enhanceJniCallStrStrIntRetVoid(ENHANCE_JAVA_CLASS, "enableLocalNotification", str_title, str_message, delay);
+    enhanceJniCallStrStrIntRetVoid(ENHANCE_JAVA_CLASS, "enableLocalNotification", str_title, str_message, delay);
 }
 
 /**
  * Disable local notifications
  */
 JNIEXPORT void Defold_Enhance_disableLocalNotification() {
-	enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "disableLocalNotification");
+    enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "disableLocalNotification");
 }
 
 JNIEXPORT void Defold_Enhance_pumpEvents() {
-	FglEnhance_pumpEvents();
+    FglEnhance_pumpEvents();
 }
 
 /**
@@ -1108,7 +1126,7 @@ JNIEXPORT void Defold_Enhance_pumpEvents() {
 */
 
 JNIEXPORT bool Defold_EnhanceInAppPurchases_isSupported() {
-	return enhanceJniCallVoidRetBool(ENHANCEINAPPURCHASES_JAVA_CLASS, "isSupported");
+    return enhanceJniCallVoidRetBool(ENHANCEINAPPURCHASES_JAVA_CLASS, "isSupported");
 }
  
 /**
@@ -1120,9 +1138,9 @@ JNIEXPORT bool Defold_EnhanceInAppPurchases_isSupported() {
 */
 
 JNIEXPORT void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed) {
-	g_callback_onPurchaseSuccess = callback_onPurchaseSuccess;
-	g_callback_onPurchaseFailed = callback_onPurchaseFailed;
-	enhanceJniCallStrRetVoid(INTERNAL_JAVA_CLASS, "attemptPurchaseJNI", str_sku);
+    g_callback_onPurchaseSuccess = callback_onPurchaseSuccess;
+    g_callback_onPurchaseFailed = callback_onPurchaseFailed;
+    enhanceJniCallStrRetVoid(INTERNAL_JAVA_CLASS, "attemptPurchaseJNI", str_sku);
 }
  
 /**
@@ -1134,9 +1152,9 @@ JNIEXPORT void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku,
 */
 
 JNIEXPORT void Defold_EnhanceInAppPurchases_consume(const char *str_sku, EnhanceListener *callback_onConsumeSuccess, EnhanceListener *callback_onConsumeFailed) {
-	g_callback_onConsumeSuccess = callback_onConsumeSuccess;
-	g_callback_onConsumeFailed = callback_onConsumeFailed;
-	enhanceJniCallStrRetVoid(INTERNAL_JAVA_CLASS, "consumeJNI", str_sku);
+    g_callback_onConsumeSuccess = callback_onConsumeSuccess;
+    g_callback_onConsumeFailed = callback_onConsumeFailed;
+    enhanceJniCallStrRetVoid(INTERNAL_JAVA_CLASS, "consumeJNI", str_sku);
 }
  
 /**
@@ -1149,11 +1167,12 @@ JNIEXPORT void Defold_EnhanceInAppPurchases_consume(const char *str_sku, Enhance
  */
 
 JNIEXPORT const char* Defold_EnhanceInAppPurchases_getDisplayPrice(const char *str_sku, const char *str_default_price) {
-    char buffer[32] = "";
+    char buffer[128] = "";
     char* out_buffer = buffer;
-	enhanceJniCallStrStrRetString(ENHANCEINAPPURCHASES_JAVA_CLASS, "getDisplayPrice", str_sku, str_default_price, out_buffer, 32);
-	
-	return out_buffer;
+    enhanceJniCallStrStrRetString(ENHANCEINAPPURCHASES_JAVA_CLASS, "getDisplayPrice", str_sku, str_default_price, out_buffer, 128);
+    LOGI("Enhance: display price - %s", buffer);
+
+    return out_buffer;
 }
 
 /**
@@ -1165,7 +1184,7 @@ JNIEXPORT const char* Defold_EnhanceInAppPurchases_getDisplayPrice(const char *s
  */
 
 JNIEXPORT bool Defold_EnhanceInAppPurchases_isItemOwned(const char *str_sku) {
-	return enhanceJniCallStrRetBool(ENHANCEINAPPURCHASES_JAVA_CLASS, "isItemOwned", str_sku);
+    return enhanceJniCallStrRetBool(ENHANCEINAPPURCHASES_JAVA_CLASS, "isItemOwned", str_sku);
 }
 
 /**
@@ -1177,11 +1196,53 @@ JNIEXPORT bool Defold_EnhanceInAppPurchases_isItemOwned(const char *str_sku) {
  */
 
 JNIEXPORT int Defold_EnhanceInAppPurchases_getOwnedItemCount(const char *str_sku) {
-	return enhanceJniCallStrRetInt(ENHANCEINAPPURCHASES_JAVA_CLASS, "getOwnedItemCount", str_sku);
+    return enhanceJniCallStrRetInt(ENHANCEINAPPURCHASES_JAVA_CLASS, "getOwnedItemCount", str_sku);
 }
 
-JNIEXPORT void Defold_EnhanceInAppPurchases_restorePurchases(EnhanceListener *pSuccess, EnhanceListener *pFailed) {
+/**
+ * Manually restore purchases
+*/
 
+JNIEXPORT void Defold_EnhanceInAppPurchases_manuallyRestorePurchases(EnhanceListener *callback_onRestoreSuccess, EnhanceListener *callback_onRestoreFailed) {
+    g_callback_onRestoreSuccess = callback_onRestoreSuccess;
+    g_callback_onRestoreFailed = callback_onRestoreFailed;
+    enhanceJniCallVoidRetVoid(INTERNAL_JAVA_CLASS, "manuallyRestorePurchasesJNI");
+}
+
+/**
+ * Get localised product title
+ * 
+ * @param str_sku unique product id
+ * @param str_default_title default title of the product
+ *
+ * @return output buffer for string value
+ */
+
+JNIEXPORT const char* Defold_EnhanceInAppPurchases_getDisplayTitle(const char *str_sku, const char* str_default_title) {
+    char buffer[512] = "";
+    char *out_buffer = buffer;
+    enhanceJniCallStrStrRetString(ENHANCEINAPPURCHASES_JAVA_CLASS, "getDisplayTitle", str_sku, str_default_title, out_buffer, 512);
+    LOGI("Enhance: display title - %s", buffer);
+
+    return out_buffer;
+}
+
+/**
+ * Get localised product description
+ * 
+ * @param str_sku unique product id
+ * @param str_default_title default description of the product
+ *
+ * @return output buffer for string value
+ */
+
+JNIEXPORT const char* Defold_EnhanceInAppPurchases_getDisplayDescription(const char *str_sku, const char* str_default_description) {
+    char buffer[1024] = "";
+    char *out_buffer = buffer;
+    enhanceJniCallStrStrRetString(ENHANCEINAPPURCHASES_JAVA_CLASS, "getDisplayDescription", str_sku, str_default_description, out_buffer, 1024);
+    LOGI("Enhance: display description - %s", buffer);
+
+    return out_buffer;
 }
 
 /** Called when this native library is loaded by the app's java code */
