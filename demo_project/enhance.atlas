@@ -1,8 +1,8 @@
 images {
-  image: "/demo_project/images/enhance.png"
+  image: "/main/images/enhance.png"
 }
 images {
-  image: "/demo_project/images/button.png"
+  image: "/main/images/button.png"
 }
 margin: 0
 extrude_borders: 0
