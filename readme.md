@@ -16,11 +16,11 @@ Interstitial Ads are short static or video ads, usually shown between levels or 
 
 1) Check whether any ad is available:
 
-       is_ready = enhance.isInterstitialReady("default")
+    is_ready = enhance.isInterstitialReady()
 
 2) Show the ad:
     
-       enhance.showInterstitial("default")
+    enhance.showInterstitialAd()
 
 Note:
 Interstitial ads will automatically interrupt the flow of your application until the user completes interaction with the ad.
@@ -33,11 +33,11 @@ Rewarded Ads are usually video ads which pay high CPM for the users who view the
 
 1) Check whether any ad is available:
 
-       isReady = enhance_extension.isRewardedAdReady("neutral")
+    is_ready = enhance.isRewardedAdReady()
 
 2) Show the ad:
 
-       enhance.showRewardedAd("placement", on_reward_granted, on_reward_declined, on_reward_unavailable)
+    enhance.showRewardedAd(on_reward_granted, on_reward_declined, on_reward_unavailable)
 
 Note:
 Rewarded ads will automatically interrupt the flow of your application until the user completes interaction with the ad.
@@ -50,21 +50,20 @@ Banner Ads are small sized ads displayed in the top or bottom of the app.
 
 1) Check whether any ad is available:
 
-       isReady = enhance.isBannerAdReady(optionalPlacement)
+    is_ready = enhance.isBannerAdReady(optionalPlacement)
 
 2) Display the ad:
 
-       enhance.showBannerAd("placement", "position");
-       enhance.showBannerAd("position");
+    enhance.showBannerAdWithPosition("position");
 
     Available positions:
 
-       "top"
-       "bottom"
+    "top"
+    "bottom"
 
 3) Hide the ad:
 
-       enhance.hideBannerAd()
+    enhance.hideBannerAd()
 
 Note:
 You can also integrate Fixed Banner Ads through Enhance ZeroCode with no coding at all.
@@ -77,11 +76,11 @@ Offer Walls show full screen of real world offers(e.g. surveys), usually with re
 
 1) Check whether any offer wall is available:
 
-       isReady = enhance.isOfferwallReady(optionalPlacement)
+    is_ready = enhance.isOfferwallReady()
 
 2) Display the offer wall:
 
-       enhance.showOfferwall(optionalPlacement)
+    enhance.showOfferwall()
 
 Note:
 Offer walls will automatically interrupt the flow of your application until the user completes interaction with the offer wall.
@@ -94,11 +93,11 @@ Special offers are real world offers(e.g. surveys). They are available through E
 
 1) Check whether any special offer is available:
 
-       isReady = enhance.isSpecialOfferReady(optionalPlacement)
+    is_ready = enhance.isSpecialOfferReady()
 
 2) Display the special offer:
 
-       enhance.showSpecialOffer(optionalPlacement)
+    enhance.showSpecialOffer()
 
 Note:
 Special Offers will automatically interrupt the flow of your application until the user completes interaction with the special offer.
@@ -110,11 +109,11 @@ Enhance can hook into various analytics networks. By default it will track sessi
 
 1) Send a simple analytics event:
 
-       enhance.logCustomEvent("event_name")
+    enhance.logEvent("event_type")
 
 2) Send a detailed analytics event:
 
-       enhance.logCustomEvent("game_over", "level", "10")
+    enhance.logEvent("event_type", "event_param_key", "event_param_value")
 
 
 Local Notifications
@@ -124,15 +123,63 @@ Local Notifications are reminders displayed on your mobile device's screen after
 
 1) Ask for local notifications permission:
 
-       enhance.requestLocalNotificationPermission(grantedCallback, refusedCallback)
+    enhance.requestLocalNotificationPermission(on_permission_granted, on_permission_rejected)
 
 2) Enable a new local notification:
 
-       enhance.enableLocalNotification("Enhance", "Local Notification!", 5)
+    enhance.enableLocalNotification("title", "message", 5)
 
 3) Disable the local notification:
 
-       enhance.disableLocalNotification()
+    enhance.disableLocalNotification()
+
+
+In-App Purchases
+----------------
+
+Enhance library provides a set of functions which help you to easily make use of different In-App Purchases SDKs in your application.
+
+1) Check if In-App purchasing is currently supported:
+
+    is_supported = enhance.iapIsSupported()
+
+2) Start the purchase flow for the given product:
+
+    enhance.attemptPurchase("product_name", on_purchase_success, on_purchase_failed)
+
+3) Try to consume the given product from the user's inventory:
+
+    enhance.consume("product_name", on_consume_success, on_consume_failed)
+
+4) Check if item is already owned:
+
+    enhance.isItemOwned("product_name")
+
+5) Get the number of the given product that user owns, or 0 if none:
+
+    count = enhance.getOwnedItemCount("product_name")
+
+6) Get the string containing the localized display title:
+    
+    enhance.getDisplayTitle("product_name", "Default Title")
+
+7) Get the string containing the localized display description:
+
+    enhance.getDisplayDescription("product_name", "Default Description")
+
+8) Get the string containing the localized display price:
+
+    price = enhance.getDisplayPrice("product_name", "Default Price")
+
+9) Manually restore purchases and update the user's inventory, if applicable:
+
+    enhance.manuallyRestorePurchases(on_restore_success, on_restore_failed)
+
+
+Advanced Usage
+--------------
+
+Most of Enhance functions can accept additional parameters for advanced usage. For example, instead of simple enhance.isInterstitialReady() you can use enhance.isInterstitialReady("some_custom_placement").
 
 
 Demo Project
