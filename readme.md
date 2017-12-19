@@ -161,11 +161,11 @@ Enhance library provides a set of functions which help you to easily make use of
 
 6) Get the string containing the localized display title:
     
-    enhance.getDisplayTitle("product_name", "Default Title")
+    title = enhance.getDisplayTitle("product_name", "Default Title")
 
 7) Get the string containing the localized display description:
 
-    enhance.getDisplayDescription("product_name", "Default Description")
+    desc = enhance.getDisplayDescription("product_name", "Default Description")
 
 8) Get the string containing the localized display price:
 
