@@ -8,76 +8,15 @@ textures {
   texture: "/demo_project/enhance.atlas"
 }
 background_color {
-  x: 0.0
-  y: 0.0
-  z: 0.0
   w: 1.0
 }
 nodes {
   position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
+    x: 120.0
+    y: 340.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  size {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  color {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  type: TYPE_BOX
-  blend_mode: BLEND_MODE_ALPHA
-  texture: ""
-  id: "root"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  adjust_mode: ADJUST_MODE_FIT
-  layer: ""
-  inherit_alpha: true
-  slice9 {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 0.0
-  }
-  clipping_mode: CLIPPING_MODE_NONE
-  clipping_visible: true
-  clipping_inverted: false
-  alpha: 1.0
-  template_node_child: false
-  size_mode: SIZE_MODE_MANUAL
-}
-nodes {
-  position {
-    x: 485.682
-    y: 583.996
-    z: 0.0
-    w: 1.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -89,7 +28,6 @@ nodes {
   size {
     x: 360.0
     y: 140.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -98,277 +36,17 @@ nodes {
     z: 0.9568628
     w: 1.0
   }
-  type: TYPE_BOX
-  blend_mode: BLEND_MODE_ALPHA
-  texture: "enhance/button"
-  id: "btn_enable_local_notification"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  adjust_mode: ADJUST_MODE_FIT
-  parent: "root"
-  layer: "behind"
-  inherit_alpha: true
-  slice9 {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 0.0
-  }
-  clipping_mode: CLIPPING_MODE_NONE
-  clipping_visible: true
-  clipping_inverted: false
-  alpha: 1.0
-  template_node_child: false
-  size_mode: SIZE_MODE_AUTO
-}
-nodes {
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale {
-    x: 2.0
-    y: 2.0
-    z: 1.0
-    w: 1.0
-  }
-  size {
-    x: 181.0
-    y: 60.0
-    z: 0.0
-    w: 1.0
-  }
-  color {
-    x: 0.31764707
-    y: 0.31764707
-    z: 0.31764707
-    w: 1.0
-  }
-  type: TYPE_TEXT
-  blend_mode: BLEND_MODE_ALPHA
-  text: "Enable Local Notification"
-  font: "system_font"
-  id: "text_enable_local_notification"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  outline {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  shadow {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  adjust_mode: ADJUST_MODE_FIT
-  line_break: true
-  parent: "btn_enable_local_notification"
-  layer: "text"
-  inherit_alpha: true
-  alpha: 1.0
-  outline_alpha: 1.0
-  shadow_alpha: 1.0
-  template_node_child: false
-  text_leading: 1.0
-  text_tracking: 0.0
-}
-nodes {
-  position {
-    x: 245.682
-    y: 803.996
-    z: 0.0
-    w: 1.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale {
-    x: 0.6
-    y: 0.6
-    z: 1.0
-    w: 1.0
-  }
-  size {
-    x: 360.0
-    y: 140.0
-    z: 0.0
-    w: 1.0
-  }
-  color {
-    x: 0.9568628
-    y: 0.9568628
-    z: 0.9568628
-    w: 1.0
-  }
-  type: TYPE_BOX
-  blend_mode: BLEND_MODE_ALPHA
-  texture: "enhance/button"
-  id: "btn_interstitial"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  adjust_mode: ADJUST_MODE_FIT
-  parent: "root"
-  layer: "behind"
-  inherit_alpha: true
-  slice9 {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 0.0
-  }
-  clipping_mode: CLIPPING_MODE_NONE
-  clipping_visible: true
-  clipping_inverted: false
-  alpha: 1.0
-  template_node_child: false
-  size_mode: SIZE_MODE_AUTO
-}
-nodes {
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale {
-    x: 2.0
-    y: 2.0
-    z: 1.0
-    w: 1.0
-  }
-  size {
-    x: 180.0
-    y: 60.0
-    z: 0.0
-    w: 1.0
-  }
-  color {
-    x: 0.31764707
-    y: 0.31764707
-    z: 0.31764707
-    w: 1.0
-  }
-  type: TYPE_TEXT
-  blend_mode: BLEND_MODE_ALPHA
-  text: "Show Interstitial Ad"
-  font: "system_font"
-  id: "text_interstitial"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  outline {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  shadow {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  adjust_mode: ADJUST_MODE_FIT
-  line_break: false
-  parent: "btn_interstitial"
-  layer: "text"
-  inherit_alpha: true
-  alpha: 1.0
-  outline_alpha: 1.0
-  shadow_alpha: 1.0
-  template_node_child: false
-  text_leading: 1.0
-  text_tracking: 0.0
-}
-nodes {
-  position {
-    x: 245.682
-    y: 473.996
-    z: 0.0
-    w: 1.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale {
-    x: 0.6
-    y: 0.6
-    z: 1.0
-    w: 1.0
-  }
-  size {
-    x: 360.0
-    y: 140.0
-    z: 0.0
-    w: 1.0
-  }
-  color {
-    x: 0.9568628
-    y: 0.9568628
-    z: 0.9568628
-    w: 1.0
-  }
-  type: TYPE_BOX
-  blend_mode: BLEND_MODE_ALPHA
   texture: "enhance/button"
   id: "btn_offerwall"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  adjust_mode: ADJUST_MODE_FIT
-  parent: "root"
-  layer: "behind"
+  layer: "ui"
   inherit_alpha: true
-  slice9 {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 0.0
-  }
-  clipping_mode: CLIPPING_MODE_NONE
-  clipping_visible: true
-  clipping_inverted: false
-  alpha: 1.0
-  template_node_child: false
   size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -380,7 +58,6 @@ nodes {
   size {
     x: 180.0
     y: 60.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -390,13 +67,9 @@ nodes {
     w: 1.0
   }
   type: TYPE_TEXT
-  blend_mode: BLEND_MODE_ALPHA
   text: "Show Offerwall"
   font: "system_font"
   id: "text_offerwall"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
   outline {
     x: 1.0
     y: 1.0
@@ -409,29 +82,17 @@ nodes {
     z: 1.0
     w: 1.0
   }
-  adjust_mode: ADJUST_MODE_FIT
-  line_break: false
   parent: "btn_offerwall"
-  layer: "text"
   inherit_alpha: true
-  alpha: 1.0
-  outline_alpha: 1.0
-  shadow_alpha: 1.0
-  template_node_child: false
-  text_leading: 1.0
-  text_tracking: 0.0
+  size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
-    x: 245.682
-    y: 583.996
-    z: 0.0
+    x: 120.0
+    y: 540.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -443,7 +104,6 @@ nodes {
   size {
     x: 360.0
     y: 140.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -452,41 +112,17 @@ nodes {
     z: 0.9568628
     w: 1.0
   }
-  type: TYPE_BOX
-  blend_mode: BLEND_MODE_ALPHA
   texture: "enhance/button"
-  id: "btn_banner"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  adjust_mode: ADJUST_MODE_FIT
-  parent: "root"
-  layer: "behind"
+  id: "btn_rewarded"
+  layer: "ui"
   inherit_alpha: true
-  slice9 {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 0.0
-  }
-  clipping_mode: CLIPPING_MODE_NONE
-  clipping_visible: true
-  clipping_inverted: false
-  alpha: 1.0
-  template_node_child: false
   size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -498,7 +134,6 @@ nodes {
   size {
     x: 180.0
     y: 60.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -508,13 +143,9 @@ nodes {
     w: 1.0
   }
   type: TYPE_TEXT
-  blend_mode: BLEND_MODE_ALPHA
-  text: "Toggle Banner Ad"
+  text: "Show Rewarded Ad"
   font: "system_font"
-  id: "text_banner"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
+  id: "text_rewarded"
   outline {
     x: 1.0
     y: 1.0
@@ -527,29 +158,17 @@ nodes {
     z: 1.0
     w: 1.0
   }
-  adjust_mode: ADJUST_MODE_FIT
-  line_break: false
-  parent: "btn_banner"
-  layer: "text"
+  parent: "btn_rewarded"
   inherit_alpha: true
-  alpha: 1.0
-  outline_alpha: 1.0
-  shadow_alpha: 1.0
-  template_node_child: false
-  text_leading: 1.0
-  text_tracking: 0.0
+  size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
-    x: 485.682
-    y: 803.996
-    z: 0.0
+    x: 120.0
+    y: 640.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -561,7 +180,6 @@ nodes {
   size {
     x: 360.0
     y: 140.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -570,41 +188,93 @@ nodes {
     z: 0.9568628
     w: 1.0
   }
-  type: TYPE_BOX
-  blend_mode: BLEND_MODE_ALPHA
+  texture: "enhance/button"
+  id: "btn_interstitial"
+  layer: "ui"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 2.0
+    y: 2.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 180.0
+    y: 60.0
+    w: 1.0
+  }
+  color {
+    x: 0.31764707
+    y: 0.31764707
+    z: 0.31764707
+    w: 1.0
+  }
+  type: TYPE_TEXT
+  text: "Show Interstitial Ad"
+  font: "system_font"
+  id: "text_interstitial"
+  outline {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  shadow {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  parent: "btn_interstitial"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 360.0
+    y: 640.0
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 0.6
+    y: 0.6
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 360.0
+    y: 140.0
+    w: 1.0
+  }
+  color {
+    x: 0.9568628
+    y: 0.9568628
+    z: 0.9568628
+    w: 1.0
+  }
   texture: "enhance/button"
   id: "btn_specialoffer"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  adjust_mode: ADJUST_MODE_FIT
-  parent: "root"
-  layer: "behind"
+  layer: "ui"
   inherit_alpha: true
-  slice9 {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 0.0
-  }
-  clipping_mode: CLIPPING_MODE_NONE
-  clipping_visible: true
-  clipping_inverted: false
-  alpha: 1.0
-  template_node_child: false
   size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -616,7 +286,6 @@ nodes {
   size {
     x: 180.0
     y: 60.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -626,13 +295,9 @@ nodes {
     w: 1.0
   }
   type: TYPE_TEXT
-  blend_mode: BLEND_MODE_ALPHA
   text: "Show Special Offer"
   font: "system_font"
   id: "text_specialoffer"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
   outline {
     x: 1.0
     y: 1.0
@@ -645,29 +310,17 @@ nodes {
     z: 1.0
     w: 1.0
   }
-  adjust_mode: ADJUST_MODE_FIT
-  line_break: false
   parent: "btn_specialoffer"
-  layer: "text"
   inherit_alpha: true
-  alpha: 1.0
-  outline_alpha: 1.0
-  shadow_alpha: 1.0
-  template_node_child: false
-  text_leading: 1.0
-  text_tracking: 0.0
+  size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
-    x: 485.682
-    y: 693.996
-    z: 0.0
+    x: 120.0
+    y: 440.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -679,7 +332,6 @@ nodes {
   size {
     x: 360.0
     y: 140.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -688,41 +340,17 @@ nodes {
     z: 0.9568628
     w: 1.0
   }
-  type: TYPE_BOX
-  blend_mode: BLEND_MODE_ALPHA
   texture: "enhance/button"
-  id: "btn_logevent"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  adjust_mode: ADJUST_MODE_FIT
-  parent: "root"
-  layer: "behind"
+  id: "btn_banner"
+  layer: "ui"
   inherit_alpha: true
-  slice9 {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 0.0
-  }
-  clipping_mode: CLIPPING_MODE_NONE
-  clipping_visible: true
-  clipping_inverted: false
-  alpha: 1.0
-  template_node_child: false
   size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -734,7 +362,6 @@ nodes {
   size {
     x: 180.0
     y: 60.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -744,13 +371,9 @@ nodes {
     w: 1.0
   }
   type: TYPE_TEXT
-  blend_mode: BLEND_MODE_ALPHA
-  text: "Log Analytics Event"
+  text: "Toggle Banner Ad"
   font: "system_font"
-  id: "text_logevent"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
+  id: "text_banner"
   outline {
     x: 1.0
     y: 1.0
@@ -763,29 +386,17 @@ nodes {
     z: 1.0
     w: 1.0
   }
-  adjust_mode: ADJUST_MODE_FIT
-  line_break: false
-  parent: "btn_logevent"
-  layer: "text"
+  parent: "btn_banner"
   inherit_alpha: true
-  alpha: 1.0
-  outline_alpha: 1.0
-  shadow_alpha: 1.0
-  template_node_child: false
-  text_leading: 1.0
-  text_tracking: 0.0
+  size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
-    x: 485.682
-    y: 473.996
-    z: 0.0
+    x: 360.0
+    y: 540.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -797,7 +408,6 @@ nodes {
   size {
     x: 360.0
     y: 140.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -806,41 +416,17 @@ nodes {
     z: 0.9568628
     w: 1.0
   }
-  type: TYPE_BOX
-  blend_mode: BLEND_MODE_ALPHA
   texture: "enhance/button"
-  id: "btn_disable_local_notification"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  adjust_mode: ADJUST_MODE_FIT
-  parent: "root"
-  layer: "behind"
+  id: "btn_logevent"
+  layer: "ui"
   inherit_alpha: true
-  slice9 {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 0.0
-  }
-  clipping_mode: CLIPPING_MODE_NONE
-  clipping_visible: true
-  clipping_inverted: false
-  alpha: 1.0
-  template_node_child: false
   size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -851,8 +437,7 @@ nodes {
   }
   size {
     x: 180.0
-    y: 80.0
-    z: 0.0
+    y: 60.0
     w: 1.0
   }
   color {
@@ -862,13 +447,9 @@ nodes {
     w: 1.0
   }
   type: TYPE_TEXT
-  blend_mode: BLEND_MODE_ALPHA
-  text: "Disable Local Notification"
+  text: "Log Analytics Event"
   font: "system_font"
-  id: "text_disable_local_notification"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
+  id: "text_logevent"
   outline {
     x: 1.0
     y: 1.0
@@ -881,29 +462,18 @@ nodes {
     z: 1.0
     w: 1.0
   }
-  adjust_mode: ADJUST_MODE_FIT
-  line_break: true
-  parent: "btn_disable_local_notification"
-  layer: "text"
+  parent: "btn_logevent"
+  layer: "ui"
   inherit_alpha: true
-  alpha: 1.0
-  outline_alpha: 1.0
-  shadow_alpha: 1.0
-  template_node_child: false
-  text_leading: 1.0
-  text_tracking: 0.0
+  size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
-    x: 310.682
-    y: 943.996
-    z: 0.0
+    x: 185.0
+    y: 740.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -915,7 +485,6 @@ nodes {
   size {
     x: 498.0
     y: 112.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -924,41 +493,19 @@ nodes {
     z: 1.0
     w: 1.0
   }
-  type: TYPE_BOX
-  blend_mode: BLEND_MODE_ALPHA
   texture: "enhance/enhance"
   id: "logo"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  adjust_mode: ADJUST_MODE_FIT
-  parent: "root"
-  layer: "behind"
+  layer: "ui"
   inherit_alpha: true
-  slice9 {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 0.0
-  }
-  clipping_mode: CLIPPING_MODE_NONE
-  clipping_visible: true
-  clipping_inverted: false
-  alpha: 1.0
-  template_node_child: false
   size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
     x: 340.0
     y: -18.0
-    z: 0.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -970,7 +517,6 @@ nodes {
   size {
     x: 100.0
     y: 50.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -980,13 +526,9 @@ nodes {
     w: 1.0
   }
   type: TYPE_TEXT
-  blend_mode: BLEND_MODE_ALPHA
   text: "Defold Demo"
   font: "system_font"
   id: "text_logo"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
   outline {
     x: 1.0
     y: 1.0
@@ -999,147 +541,17 @@ nodes {
     z: 1.0
     w: 1.0
   }
-  adjust_mode: ADJUST_MODE_FIT
-  line_break: false
   parent: "logo"
-  layer: "text"
   inherit_alpha: true
-  alpha: 1.0
-  outline_alpha: 1.0
-  shadow_alpha: 1.0
-  template_node_child: false
-  text_leading: 1.0
-  text_tracking: 0.0
+  size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
-    x: 365.682
-    y: 323.996
-    z: 0.0
+    x: 360.0
+    y: 440.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  size {
-    x: 440.0
-    y: 60.0
-    z: 0.0
-    w: 1.0
-  }
-  color {
-    x: 0.92549026
-    y: 0.92549026
-    z: 0.92549026
-    w: 1.0
-  }
-  type: TYPE_BOX
-  blend_mode: BLEND_MODE_ALPHA
-  texture: ""
-  id: "log"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  adjust_mode: ADJUST_MODE_FIT
-  parent: "root"
-  layer: "behind"
-  inherit_alpha: true
-  slice9 {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 0.0
-  }
-  clipping_mode: CLIPPING_MODE_NONE
-  clipping_visible: true
-  clipping_inverted: false
-  alpha: 1.0
-  template_node_child: false
-  size_mode: SIZE_MODE_MANUAL
-}
-nodes {
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale {
-    x: 1.1
-    y: 1.1
-    z: 1.1
-    w: 1.0
-  }
-  size {
-    x: 400.0
-    y: 50.0
-    z: 0.0
-    w: 1.0
-  }
-  color {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  type: TYPE_TEXT
-  blend_mode: BLEND_MODE_ALPHA
-  text: "Logs..."
-  font: "system_font"
-  id: "text_log"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  outline {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  shadow {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  adjust_mode: ADJUST_MODE_FIT
-  line_break: false
-  parent: "log"
-  layer: "text"
-  inherit_alpha: true
-  alpha: 1.0
-  outline_alpha: 1.0
-  shadow_alpha: 1.0
-  template_node_child: false
-  text_leading: 1.0
-  text_tracking: 0.0
-}
-nodes {
-  position {
-    x: 245.682
-    y: 693.996
-    z: 0.0
-    w: 1.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -1151,7 +563,6 @@ nodes {
   size {
     x: 360.0
     y: 140.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -1160,41 +571,17 @@ nodes {
     z: 0.9568628
     w: 1.0
   }
-  type: TYPE_BOX
-  blend_mode: BLEND_MODE_ALPHA
   texture: "enhance/button"
-  id: "btn_rewarded"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  adjust_mode: ADJUST_MODE_FIT
-  parent: "root"
-  layer: "behind"
+  id: "btn_enable_local_notification"
+  layer: "ui"
   inherit_alpha: true
-  slice9 {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 0.0
-  }
-  clipping_mode: CLIPPING_MODE_NONE
-  clipping_visible: true
-  clipping_inverted: false
-  alpha: 1.0
-  template_node_child: false
   size_mode: SIZE_MODE_AUTO
 }
 nodes {
   position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
     w: 1.0
   }
   scale {
@@ -1204,9 +591,8 @@ nodes {
     w: 1.0
   }
   size {
-    x: 180.0
+    x: 181.0
     y: 60.0
-    z: 0.0
     w: 1.0
   }
   color {
@@ -1216,13 +602,9 @@ nodes {
     w: 1.0
   }
   type: TYPE_TEXT
-  blend_mode: BLEND_MODE_ALPHA
-  text: "Show Rewarded Ad"
+  text: "Enable Local Notification"
   font: "system_font"
-  id: "text_rewarded"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
+  id: "text_enable_local_notification"
   outline {
     x: 1.0
     y: 1.0
@@ -1235,24 +617,415 @@ nodes {
     z: 1.0
     w: 1.0
   }
-  adjust_mode: ADJUST_MODE_FIT
-  line_break: false
-  parent: "btn_rewarded"
-  layer: ""
+  line_break: true
+  parent: "btn_enable_local_notification"
   inherit_alpha: true
-  alpha: 1.0
-  outline_alpha: 1.0
-  shadow_alpha: 1.0
-  template_node_child: false
-  text_leading: 1.0
-  text_tracking: 0.0
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 360.0
+    y: 340.0
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 0.6
+    y: 0.6
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 360.0
+    y: 140.0
+    w: 1.0
+  }
+  color {
+    x: 0.9568628
+    y: 0.9568628
+    z: 0.9568628
+    w: 1.0
+  }
+  texture: "enhance/button"
+  id: "btn_disable_local_notification"
+  layer: "ui"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 2.0
+    y: 2.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 180.0
+    y: 80.0
+    w: 1.0
+  }
+  color {
+    x: 0.31764707
+    y: 0.31764707
+    z: 0.31764707
+    w: 1.0
+  }
+  type: TYPE_TEXT
+  text: "Disable Local Notification"
+  font: "system_font"
+  id: "text_disable_local_notification"
+  outline {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  shadow {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  line_break: true
+  parent: "btn_disable_local_notification"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 240.0
+    y: 400.0
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 480.0
+    y: 800.0
+    w: 1.0
+  }
+  color {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  id: "bg"
+  layer: "background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 240.0
+    y: 60.0
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 440.0
+    y: 50.0
+    w: 1.0
+  }
+  color {
+    x: 0.92549026
+    y: 0.92549026
+    z: 0.92549026
+    w: 1.0
+  }
+  id: "log"
+  layer: "ui"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 1.1
+    y: 1.1
+    z: 1.1
+    w: 1.0
+  }
+  size {
+    x: 400.0
+    y: 40.0
+    w: 1.0
+  }
+  color {
+    w: 1.0
+  }
+  type: TYPE_TEXT
+  text: "Logs..."
+  font: "system_font"
+  id: "text_log"
+  outline {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  shadow {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  parent: "log"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 240.0
+    y: 140.0
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 440.0
+    y: 50.0
+    w: 1.0
+  }
+  color {
+    x: 0.92549026
+    y: 0.92549026
+    z: 0.92549026
+    w: 1.0
+  }
+  id: "label"
+  layer: "ui"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 1.1
+    y: 1.1
+    z: 1.1
+    w: 1.0
+  }
+  size {
+    x: 400.0
+    y: 45.0
+    w: 1.0
+  }
+  color {
+    w: 1.0
+  }
+  type: TYPE_TEXT
+  font: "system_font"
+  id: "text_label"
+  outline {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  shadow {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  parent: "label"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 120.0
+    y: 240.0
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 0.6
+    y: 0.6
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 360.0
+    y: 140.0
+    w: 1.0
+  }
+  color {
+    x: 0.9568628
+    y: 0.9568628
+    z: 0.9568628
+    w: 1.0
+  }
+  texture: "enhance/button"
+  id: "btn_purchase"
+  layer: "ui"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 2.0
+    y: 2.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 180.0
+    y: 60.0
+    w: 1.0
+  }
+  color {
+    x: 0.31764707
+    y: 0.31764707
+    z: 0.31764707
+    w: 1.0
+  }
+  type: TYPE_TEXT
+  text: "Purchase IAP"
+  font: "system_font"
+  id: "text_purchase"
+  outline {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  shadow {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  parent: "btn_purchase"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 360.0
+    y: 240.0
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 0.6
+    y: 0.6
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 360.0
+    y: 140.0
+    w: 1.0
+  }
+  color {
+    x: 0.9568628
+    y: 0.9568628
+    z: 0.9568628
+    w: 1.0
+  }
+  texture: "enhance/button"
+  id: "btn_consume"
+  layer: "ui"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    w: 1.0
+  }
+  rotation {
+    w: 1.0
+  }
+  scale {
+    x: 2.0
+    y: 2.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 180.0
+    y: 60.0
+    w: 1.0
+  }
+  color {
+    x: 0.31764707
+    y: 0.31764707
+    z: 0.31764707
+    w: 1.0
+  }
+  type: TYPE_TEXT
+  text: "Consume IAP"
+  font: "system_font"
+  id: "text_consume"
+  outline {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  shadow {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  parent: "btn_consume"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
 }
 layers {
-  name: "behind"
+  name: "background"
 }
 layers {
-  name: "text"
+  name: "ui"
 }
-material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT
-max_nodes: 512

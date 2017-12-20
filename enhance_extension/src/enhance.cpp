@@ -350,15 +350,37 @@ static int EnhanceGetOwnedItemCount(lua_State* L)
    return 1;
 }
 
-static int EnhanceRestorePurchases(lua_State* L)
+static int EnhanceManuallyRestorePurchases(lua_State* L)
 {
-   g_onConsumeSuccess.set(L, 1);
-   g_onConsumeFailed.set(L, 2);
+   g_onRestoreSuccess.set(L, 1);
+   g_onRestoreFailed.set(L, 2);
 
-   Defold_EnhanceInAppPurchases_restorePurchases(&g_onConsumeSuccess, &g_onConsumeFailed);
-   
-   // Return no value
+   Defold_EnhanceInAppPurchases_manuallyRestorePurchases(&g_onRestoreSuccess, &g_onRestoreFailed);
+
+   // ret no value
    return 0;
+}
+
+static int EnhanceGetDisplayTitle(lua_State* L)
+{
+   const char* str_sku = luaL_checkstring(L, 1);
+   const char* str_default_title = luaL_checkstring(L, 2);
+
+   const char* title_str = Defold_EnhanceInAppPurchases_getDisplayTitle(str_sku, str_default_title);
+
+   lua_pushstring(L, title_str);
+   return 1;
+}
+
+static int EnhanceGetDisplayDescription(lua_State* L)
+{
+   const char* str_sku = luaL_checkstring(L, 1);
+   const char* str_default_description = luaL_checkstring(L, 2);
+
+   const char* description_str = Defold_EnhanceInAppPurchases_getDisplayDescription(str_sku, str_default_description);
+
+   lua_pushstring(L, description_str);
+   return 1;
 }
 
 // Functions exposed to Lua
@@ -367,8 +389,10 @@ static const luaL_reg Module_methods[] =
    {"isEnhanced", EnhanceIsEnhanced},
    {"setInterstitialCallback", EnhanceSetInterstitialCallback},
    {"setCurrencyCallback", EnhanceSetCurrencyCallback},
+   {"setReceivedCurrencyCallback", EnhanceSetCurrencyCallback},
    {"isInterstitialReady", EnhanceIsInterstitialReady},
    {"showInterstitial", EnhanceShowInterstitial},
+   {"showInterstitialAd", EnhanceShowInterstitial},
    {"isRewardedAdReady", EnhanceIsRewardedAdReady},
    {"showRewardedAd", EnhanceShowRewardedAd},
    {"isOfferwallReady", EnhanceIsOfferwallReady},
@@ -377,19 +401,23 @@ static const luaL_reg Module_methods[] =
    {"showSpecialOffer", EnhanceShowSpecialOffer},
    {"isBannerAdReady", EnhanceIsBannerAdReady},
    {"showBannerAd", EnhanceShowBannerAd},
+   {"showBannerAdWithPosition", EnhanceShowBannerAd},
    {"hideBannerAd", EnhanceHideBannerAd},
    {"isFullscreenAdShowing", EnhanceIsFullscreenAdShowing},
    {"logCustomEvent", EnhanceLogCustomEvent},
+   {"logEvent", EnhanceLogCustomEvent},
    {"requestLocalNotificationPermission", EnhanceRequestLocalNotificationPermission},
    {"enableLocalNotification", EnhanceEnableLocalNotification},
    {"disableLocalNotification", EnhanceDisableLocalNotification},
    {"iapIsSupported", EnhanceIAPIsSupported},
    {"attemptPurchase", EnhanceAttemptPurchase},
-   {"isItemOwned", EnhanceConsume},   
+   {"consume", EnhanceConsume},   
    {"getDisplayPrice", EnhanceGetDisplayPrice},
    {"isItemOwned", EnhanceIsItemOwned},
    {"getOwnedItemCount", EnhanceGetOwnedItemCount},
-   {"restorePurchases", EnhanceRestorePurchases},
+   {"manuallyRestorePurchases", EnhanceManuallyRestorePurchases},
+   {"getDisplayTitle", EnhanceGetDisplayTitle},
+   {"getDisplayDescription", EnhanceGetDisplayDescription},
    {0, 0}
 };
 

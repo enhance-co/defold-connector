@@ -1,57 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
-
-#define PLACEMENT_DEFAULT @"default"
-
-#define INTERSTITIAL_PLACEMENT_DEFAULT @"default"
-#define INTERSTITIAL_PLACEMENT_LEVEL_COMPLETED @"level_completed"
-
-#define REWARDED_PLACEMENT_SUCCESS @"SUCCESS"
-#define REWARDED_PLACEMENT_HELPER @"HELPER"
-#define REWARDED_PLACEMENT_NEUTRAL @"NEUTRAL"
-
-typedef enum {
-   REWARDTYPE_ITEM = 1,
-   REWARDTYPE_COINS,
-} RewardType;
-
-typedef enum {
-   POSITION_TOP = 1,
-   POSITION_BOTTOM,
-} Position;
-
-@protocol InterstitialDelegate<NSObject>
-
--(void)onInterstitialCompleted;
-
-@optional
--(void)onInterstitialShowing;
-
-@end
-
-@protocol CurrencyGrantedDelegate<NSObject>
-
--(void)onCurrencyGranted:(int)amount;
-
-@end
-
-@protocol RewardDelegate<NSObject>
-
--(void)onRewardGranted:(int)rewardValue rewardType:(RewardType)rewardType;
--(void)onRewardDeclined;
--(void)onRewardUnavailable;
-
-@optional
--(void)onRewardedAdShowing;
-
-@end
-
-@protocol PermissionDelegate<NSObject>
-
--(void)onPermissionGranted;
--(void)onPermissionRefused;
-
-@end
+#import "Enhance.h"
 
 @protocol AppConfigDelegate<NSObject>
 

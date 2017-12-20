@@ -1,6 +1,7 @@
 [project]
-title = Enhance Defold Connector
-version = 1
+title = Enhance Defold Demo
+version = 0.1
+write_log = 1
 
 [bootstrap]
 main_collection = /demo_project/main.collectionc
@@ -9,9 +10,10 @@ main_collection = /demo_project/main.collectionc
 game_binding = /input/game.input_bindingc
 
 [display]
-width = 720
-height = 1280
-dynamic_orientation = 1
+width = 480
+height = 800
+high_dpi = 0
+fullscreen = 0
 
 [physics]
 scale = 0.02
@@ -20,7 +22,7 @@ scale = 0.02
 shared_state = 1
 
 [android]
-package = co.enhance.defold
+package = co.enhance.defolddemoapp
 app_icon_36x36 = /demo_project/images/icon/36.png
 app_icon_48x48 = /demo_project/images/icon/48.png
 app_icon_72x72 = /demo_project/images/icon/72.png
@@ -29,7 +31,6 @@ app_icon_144x144 = /demo_project/images/icon/144.png
 app_icon_192x192 = /demo_project/images/icon/192.png
 
 [ios]
-bundle_identifier = co.enhance.defold
 app_icon_120x120 = /demo_project/images/icon/120.png
 app_icon_180x180 = /demo_project/images/icon/180.png
 app_icon_76x76 = /demo_project/images/icon/76.png
@@ -39,7 +40,6 @@ app_icon_114x114 = /demo_project/images/icon/114.png
 app_icon_72x72 = /demo_project/images/icon/72.png
 app_icon_144x144 = /demo_project/images/icon/144.png
 app_icon_167x167 = /demo_project/images/icon/167.png
-
-[library]
-include_dirs = enhance_extension
+bundle_identifier = co.enhance.testapp
+pre_renderered_icons = 0
 
