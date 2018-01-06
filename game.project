@@ -43,3 +43,6 @@ app_icon_167x167 = /demo_project/images/icon/167.png
 bundle_identifier = co.enhance.testapp
 pre_renderered_icons = 0
 
+[library]
+include_dirs = enhance_extension
+
