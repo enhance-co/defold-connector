@@ -51,6 +51,9 @@ function on_input(self, action_id, action)
 		test_click(action, "btn_disable_local_notification", on_disable_local_notification_clicked)
 		test_click(action, "btn_purchase", on_purchase_clicked)
 		test_click(action, "btn_consume", on_consume_clicked)
+		test_click(action, "btn_gdpr_opt_in", on_gdpr_opt_in_clicked)
+		test_click(action, "btn_gdpr_opt_out", on_gdpr_opt_out_clicked)
+		test_click(action, "btn_gdpr_show_dialogs", on_gdpr_show_dialogs_clicked)
 	end
 end
 
@@ -194,6 +197,35 @@ function on_disable_local_notification_clicked()
 	
 	enhance.disableLocalNotification()
 	write_log("Disabled local notification")
+end
+
+function on_gdpr_opt_in_clicked()
+	-- Explicit opt-in
+	
+	enhance.serviceTermsOptIn();
+	write_log("Called explicit opt-in")
+end
+
+function on_gdpr_opt_out_clicked()
+	-- Explicit opt-out
+	
+	enhance.serviceTermsOptOut();
+	write_log("Called explicit opt-out")
+end
+
+function on_gdpr_show_dialogs_clicked()
+	-- Show data consent dialogs of all SDKs that provide them
+	enhance.requiresDataConsentOptIn(on_service_opt_in_requirement)	
+end
+
+function on_service_opt_in_requirement(self, isUserOptInRequired)
+	if isUserOptInRequired then
+		enhance.showServiceOptInDialogs(on_dialogs_complete)
+	end
+end
+
+function on_dialogs_complete()
+	write_log("Finished displaying opt-in dialogs")
 end
 
 -- Offerwall callback
