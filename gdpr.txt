@@ -1,0 +1,74 @@
+# Enhance Drag & Drop Library by Enhance, Inc.
+# https://enhance.co/documentation
+# 
+# GDPR Information for DEFOLD
+
+Overview
+--------
+
+As of May 25th 2018, the new GDPR law will be fully enforced, which means that for your client in the EU you must ensure that your apps are compliant.
+
+Service providers have been updating their SDKs to offer methods that allow you to opt in and out of data collection. Some service providers require users to provide their own "opt-in" dialog, which must present a clear choice to the end-user and allow them to either opt-in to having their data collected and processed, or opt-out entirely.
+
+The GDPR does not permit automatically opting users in, even if an opt-out method is provided; it must be an explicit opt-in.
+
+Enhance exposes some functionality to make it possible to use these GDPR compliancy features of the SDKs you include when Enhancing your app. Ultimately, the responsibility lies with you to ensure that you are meeting the appropriate regulation.
+
+
+Implementation
+--------------
+
+For the majority of SDKs that support GDPR, you must present an appropriate choice to the user, clearly outlining what the user is agreeing to and giving them a clear choice to opt in or out. Once you have done this, you can use the methods provided in the Drag and Drop library, listed below, to convey the user's choice through to the SDKs you have integrated.
+
+Methods:
+
+nil enhance.requiresDataConsentOptIn(
+    function onServiceOptInRequirementCallback
+)
+
+This method returns 1 to callback method when any kind of opt-in is required by services that are included in your app. This will check if the user is within a country where GDPR regulations are enforced, and whether you have any services that require opt-in which are not already opted into. If this method returns 0 to callback then all of your SDKs will be operating as normal, or the user has explicitly opted out of data collection/processing.
+
+
+nil enhance.showServiceOptInDialogs(
+    function onDialogCompleteCallback
+)
+
+nil enhance.showServiceOptInDialogs(
+    function onDialogCompleteCallback,
+    "sdk_id_1",
+    "sdk_id_2",
+    ...
+)
+
+This method will instruct any services which contain built-in opt-in dialogs to display them. The Enhance process will inform you about which services allow this type of opt-in. Using SDKs with built-in dialogs is the easiest way to ask your users whether they'd like to opt-in.
+Optionally you can add a list of SDK IDs for which you want to display opt-in dialogs, every ID as a separate argument.
+onDialogCompleteCallback is an optional callback which will be invoked after all opt-in dialogs are closed.
+
+
+nil enhance.serviceTermsOptIn()
+
+nil enhance.serviceTermsOptIn(
+    "sdk_id_1",
+    "sdk_id_2",
+    ...
+)
+
+Calling this method will opt the current user in to using the services that you selected during the Enhance process. This should be used for any services which don't provide their own opt-in dialogs. You can optionally pass in a list of service IDs to be opted into, every ID as a separate argument. You should only call this method after showing a clear consent dialog which contains all of the details regarding consent required by the affected SDKs. See the "Displaying your own GDPR opt-in dialog" section below for more information.
+
+
+nil enhance.serviceTermsOptOut()
+
+This explicit opt-out will instruct any GDPR compliant services that you're using that the user has specifically declined an opt-in to their data collection and processing. It can also be used to revert a previous opt-in decision by the user - if the user chooses to revoke their consent.
+
+
+Displaying your own GDPR opt-in dialog
+--------------------------------------
+
+Some services require you to display your own opt-in dialog. During the Enhance process, you will be notified when you select a service that requires a custom opt-in dialog.
+
+It's very important that you display an accurate opt-in dialog to your users. Here's what you need to do:
+
+1. Visit the website of the service providers which require a custom opt-in to find information on wording and consent needed.
+2. Build your own dialog in your app which clearly presents the user with the wording and clearly identifies what the user is giving consent to.
+3. Allow the user to choose to opt-in, or to opt-out of the data collection and processing.
+4. If the user chooses to opt-in, call the enhance.serviceTermsOptIn() method, or if the user chooses to opt-out, call the enhance.serviceTermsOptOut() method.
