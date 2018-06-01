@@ -31,6 +31,8 @@ static EnhanceListener *g_callback_onConsumeSuccess;
 static EnhanceListener *g_callback_onConsumeFailed;
 static EnhanceListener *g_callback_onRestoreSuccess;
 static EnhanceListener *g_callback_onRestoreFailed;
+static EnhanceListener *g_callback_onServiceOptInRequirement;
+static EnhanceListener *g_callback_onDialogComplete;
 
 /** Java class names of the Enhance connector */
 #define INTERNAL_JAVA_CLASS "co.enhance.Internal"
@@ -68,6 +70,8 @@ enum EventType {
     ENHANCE_EVENT_INTERSTITIAL_COMPLETED = 9,
     ENHANCE_EVENT_RESTORE_SUCCESS = 10,
     ENHANCE_EVENT_RESTORE_FAILED = 11,
+    ENHANCE_EVENT_ON_SERVICE_OPT_IN_REQUIREMENT = 12,
+    ENHANCE_EVENT_ON_DIALOG_COMPLETE = 13
 };
 
 /** Received event */
@@ -916,6 +920,18 @@ JNIEXPORT void FglEnhance_pumpEvents(void) {
                 if(g_callback_onRestoreFailed)
                     g_callback_onRestoreFailed->callWithNoParam();
                 break;
+
+            case ENHANCE_EVENT_ON_SERVICE_OPT_IN_REQUIREMENT:
+                dmLogInfo("EnhanceDefold[android]: onServiceOptInRequirement: %d", intParam[0]);
+                if(g_callback_onServiceOptInRequirement)
+                    g_callback_onServiceOptInRequirement->callWithIntParam(intParam[0]);
+                break;
+
+            case ENHANCE_EVENT_ON_DIALOG_COMPLETE:
+                dmLogInfo("EnhanceDefold[android]: onDialogComplete");
+                if(g_callback_onDialogComplete)
+                    g_callback_onDialogComplete->callWithNoParam();
+                break;
         }
     } while (nEventType != ENHANCE_EVENT_NONE);
 }
@@ -1113,6 +1129,26 @@ JNIEXPORT void Defold_Enhance_enableLocalNotification(const char *str_title, con
  */
 JNIEXPORT void Defold_Enhance_disableLocalNotification() {
     enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "disableLocalNotification");
+}
+
+// GDPR
+
+JNIEXPORT void Defold_Enhance_requiresDataConsentOptIn(EnhanceListener *callback_onServiceOptInRequirement) {
+    g_callback_onServiceOptInRequirement = callback_onServiceOptInRequirement;
+    enhanceJniCallVoidRetVoid(INTERNAL_JAVA_CLASS, "requiresDataConsentOptInJNI");
+}
+
+JNIEXPORT void Defold_Enhance_serviceTermsOptIn(const char *str_sdks) {
+    enhanceJniCallStrRetVoid(INTERNAL_JAVA_CLASS, "serviceTermsOptInJNI", str_sdks);
+}
+
+JNIEXPORT void Defold_Enhance_showServiceOptInDialogs(const char *str_sdks, EnhanceListener *callback_onDialogComplete) {
+    g_callback_onDialogComplete = callback_onDialogComplete;
+    enhanceJniCallStrRetVoid(INTERNAL_JAVA_CLASS, "showServiceOptInDialogsJNI", str_sdks);
+}
+
+JNIEXPORT void Defold_Enhance_serviceTermsOptOut() {
+    enhanceJniCallVoidRetVoid(ENHANCE_JAVA_CLASS, "serviceTermsOptOut");
 }
 
 JNIEXPORT void Defold_Enhance_pumpEvents() {

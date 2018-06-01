@@ -154,6 +154,11 @@ extern "C" {
    void Defold_EnhanceInAppPurchases_manuallyRestorePurchases(EnhanceListener *callback_onRestoreSuccess, EnhanceListener *callback_onRestoreFailed);
    const char* Defold_EnhanceInAppPurchases_getDisplayTitle(const char *str_sku, const char *str_default_title);
    const char* Defold_EnhanceInAppPurchases_getDisplayDescription(const char *str_sku, const char *str_default_description);
+   // GDPR
+   void Defold_Enhance_requiresDataConsentOptIn(EnhanceListener *callback_onServiceOptInRequirement);
+   void Defold_Enhance_serviceTermsOptIn(const char *str_sdks);
+   void Defold_Enhance_showServiceOptInDialogs(const char *str_sdks, EnhanceListener *callback_onDialogComplete);
+   void Defold_Enhance_serviceTermsOptOut();
 }
 
 #endif /* _ENHANCE_INTERNAL_H */
