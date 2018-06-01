@@ -6,7 +6,11 @@
 Setup
 -----
 
-Move the provided extension folder (enhance_extension) into your Defold project. Make sure it is visible in the Project Explorer.
+Include the provided extension folder into your Defold project, or add this project as a Defold library dependency (http://www.defold.com/manuals/libraries/). Open your game.project file and in the dependencies field under project add:
+
+    https://github.com/enhance-co/defold-connector/archive/master.zip
+
+Or point to the ZIP file of a specific release (https://github.com/enhance-co/defold-connector/releases).
 
 
 Interstitial Ads
