@@ -202,7 +202,7 @@ end
 function on_gdpr_opt_in_clicked()
 	-- Explicit opt-in
 	
-	enhance.serviceTermsOptIn();
+	enhance.serviceTermsOptIn()
 	write_log("Called explicit opt-in")
 end
 
@@ -219,7 +219,7 @@ function on_gdpr_show_dialogs_clicked()
 end
 
 function on_service_opt_in_requirement(self, isUserOptInRequired)
-	if isUserOptInRequired then
+	if isUserOptInRequired == 1 then
 		enhance.showServiceOptInDialogs(on_dialogs_complete)
 	end
 end
