@@ -2,6 +2,8 @@
 #define MODULE_NAME "enhance"
 
 #include "enhance_internal.h"
+#include <stdio.h>
+#include <string.h>
 
 // LUA<=>C++ functions for Enhance
 
@@ -11,6 +13,8 @@ EnhanceListener g_permissionGranted, g_permissionRefused;
 EnhanceListener g_onPurchaseSuccess, g_onPurchaseFailed;
 EnhanceListener g_onConsumeSuccess, g_onConsumeFailed;
 EnhanceListener g_onRestoreSuccess, g_onRestoreFailed;
+EnhanceListener g_onServiceOptInRequirement;
+EnhanceListener g_onDialogComplete;
 
 static int EnhanceIsEnhanced(lua_State* L)
 {
@@ -383,6 +387,60 @@ static int EnhanceGetDisplayDescription(lua_State* L)
    return 1;
 }
 
+static int EnhanceRequiresDataConsentOptIn(lua_State* L)
+{
+    g_onServiceOptInRequirement.set(L, 1);
+
+    Defold_Enhance_requiresDataConsentOptIn(&g_onServiceOptInRequirement);
+    return 0;
+}
+
+static int EnhanceServiceTermsOptIn(lua_State* L)
+{
+    char buffer[1024] = "";
+    int n = lua_gettop(L);
+    int i;
+
+    for(i = 1; i <= n; i++) {
+        if(i > 1) {
+            strcat(buffer, ",");
+        }
+
+        const char *str_sdk = luaL_checkstring(L, i);
+        strcat(buffer, str_sdk);
+    }
+
+    Defold_Enhance_serviceTermsOptIn(buffer);
+    return 0;
+}
+
+static int EnhanceShowServiceOptInDialogs(lua_State* L)
+{
+    g_onDialogComplete.set(L, 1);
+
+    char buffer[1024] = "";
+    int n = lua_gettop(L);
+    int i;
+
+    for(i = 2; i <= n; i++) {
+        if(i > 2) {
+            strcat(buffer, ",");
+        }
+
+        const char *str_sdk = luaL_checkstring(L, i);
+        strcat(buffer, str_sdk);
+    }
+
+    Defold_Enhance_showServiceOptInDialogs(buffer, &g_onDialogComplete);
+    return 0;
+}
+
+static int EnhanceServiceTermsOptOut(lua_State* L)
+{
+    Defold_Enhance_serviceTermsOptOut();
+    return 0;
+}
+
 // Functions exposed to Lua
 static const luaL_reg Module_methods[] =
 {
@@ -418,6 +476,10 @@ static const luaL_reg Module_methods[] =
    {"manuallyRestorePurchases", EnhanceManuallyRestorePurchases},
    {"getDisplayTitle", EnhanceGetDisplayTitle},
    {"getDisplayDescription", EnhanceGetDisplayDescription},
+   {"serviceTermsOptIn", EnhanceServiceTermsOptIn},
+   {"requiresDataConsentOptIn", EnhanceRequiresDataConsentOptIn},
+   {"showServiceOptInDialogs", EnhanceShowServiceOptInDialogs},
+   {"serviceTermsOptOut", EnhanceServiceTermsOptOut},
    {0, 0}
 };
 
