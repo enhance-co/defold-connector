@@ -107,6 +107,23 @@ void Defold_Enhance_disableLocalNotification() {
     dmLogInfo("Enhance: disable local notification");
 }
 
+void Defold_Enhance_requiresDataConsentOptIn(EnhanceListener *callback_onServiceOptInRequirement) {
+    if(callback_onServiceOptInRequirement)
+        callback_onServiceOptInRequirement->callWithIntParam(0);
+}
+
+void Defold_Enhance_serviceTermsOptIn(const char *str_sdks) {
+    dmLogInfo("Enhance: service terms opt in");
+}
+
+void Defold_Enhance_showServiceOptInDialogs(const char *str_sdks, EnhanceListener *callback_onDialogComplete) {
+    dmLogInfo("Enhance: show service opt in dialogs");
+}
+
+void Defold_Enhance_serviceTermsOptOut() {
+    dmLogInfo("Enhance: service terms opt out");
+}
+
 bool Defold_EnhanceInAppPurchases_isSupported() {
     return true;
 }

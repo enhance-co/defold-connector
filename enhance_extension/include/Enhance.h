@@ -11,6 +11,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import "EnhanceInAppPurchases.h"
+#import "EnhanceSettings.h"
 
 #define PLACEMENT_DEFAULT @"default"
 
@@ -64,6 +65,55 @@ typedef enum {
 
 @end
 
+@protocol AdCompleteDelegate<NSObject>
+
+-(void)onComplete:(NSString*)sdkId sdkType:(NSString*)sdkType sdkVersion:(NSString*)sdkVersion;
+
+@end
+
+@protocol AdLoadingDelegate<NSObject>
+
+-(void)onLoading:(NSString*)sdkId sdkType:(NSString*)sdkType sdkVersion:(NSString*)sdkVersion;
+
+@end
+
+@protocol AdReadyDelegate<NSObject>
+
+-(void)onReady:(NSString*)sdkId sdkType:(NSString*)sdkType sdkVersion:(NSString*)sdkVersion;
+
+@end
+
+@protocol AdUnavailableDelegate<NSObject>
+
+-(void)onUnavailable:(NSString*)sdkId sdkType:(NSString*)sdkType sdkVersion:(NSString*)sdkVersion;
+
+@end
+
+@protocol AdShowingDelegate<NSObject>
+
+-(void)onShowing:(NSString*)sdkId sdkType:(NSString*)sdkType sdkVersion:(NSString*)sdkVersion;
+
+@end
+
+@protocol AdClickedDelegate<NSObject>
+
+-(void)onClicked:(NSString*)sdkId sdkType:(NSString*)sdkType sdkVersion:(NSString*)sdkVersion;
+
+@end
+
+@protocol AdFailedToShowDelegate<NSObject>
+
+-(void)onFailedToShow:(NSString*)sdkId sdkType:(NSString*)sdkType sdkVersion:(NSString*)sdkVersion;
+
+@end
+
+@protocol DataConsentDelegate<NSObject>
+
+-(void)onServiceOptInRequirement:(BOOL)isUserOptInRequired;
+-(void)onOptInDialogComplete;
+
+@end
+
 @interface Enhance : NSObject {
 }
 
@@ -94,10 +144,28 @@ typedef enum {
 +(void)disableLocalNotification;
 +(void)logEvent:(NSString*)eventType;
 +(void)logEvent:(NSString*)eventType withParameter:(NSString*)paramKey andValue:(NSString*)paramValue;
++(void)logEvent:(NSString*)eventType parameters:(NSDictionary*)parameters;
 +(EnhanceInAppPurchases*)purchases;
++(EnhanceSettings*)settings;
+
++(void)setOnCompleteDelegate:(id)delegate;
++(void)setOnLoadingDelegate:(id)delegate;
++(void)setOnReadyDelegate:(id)delegate;
++(void)setOnUnavailableDelegate:(id)delegate;
++(void)setOnShowingDelegate:(id)delegate;
++(void)setOnClickedDelegate:(id)delegate;
++(void)setOnFailedToShowDelegate:(id)delegate;
 
 +(BOOL)isEnhanced;
 +(BOOL)isFullscreenAdShowing;
+
++(void)requiresDataConsentOptIn:(id)delegate;
++(void)serviceTermsOptIn;
++(void)serviceTermsOptIn:(NSArray*)requestedSdks;
++(void)showServiceOptInDialogs;
++(void)showServiceOptInDialogs:(NSArray*)requestedSdks;
++(void)showServiceOptInDialogs:(NSArray*)requestedSdks delegate:(id)delegate;
++(void)serviceTermsOptOut;
 
 @end
 

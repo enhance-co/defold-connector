@@ -19,8 +19,11 @@ static EnhanceListener *g_pRestoreSuccess;
 static EnhanceListener *g_pRestoreFailed;
 static EnhanceListener *g_pConsumeSuccess;
 static EnhanceListener *g_pConsumeFailed;
+static EnhanceListener *g_pOnServiceOptInRequirement;
+static EnhanceListener *g_pOnDialogComplete;
 
-@interface DefoldEnhanceDelegate : NSObject<InterstitialDelegate, RewardDelegate, CurrencyGrantedDelegate, PermissionDelegate, RestoreDelegate, ConsumeDelegate> {
+
+@interface DefoldEnhanceDelegate : NSObject<InterstitialDelegate, RewardDelegate, CurrencyGrantedDelegate, PermissionDelegate, RestoreDelegate, ConsumeDelegate, DataConsentDelegate> {
 }
 @end
 
@@ -114,6 +117,20 @@ static EnhanceListener *g_pConsumeFailed;
    if(g_pConsumeFailed) {
       g_pConsumeFailed->callWithNoParam();
    }
+}
+
+-(void)onServiceOptInRequirement:(BOOL)isUserOptInRequired {
+    dmLogInfo("EnhanceDefold[iOS]: onServiceOptInRequirement");
+    if(g_pOnServiceOptInRequirement) {
+        g_pOnServiceOptInRequirement->callWithIntParam((isUserOptInRequired ? 1 : 0));
+    }
+}
+
+-(void)onOptInDialogComplete {
+    dmLogInfo("EnhanceDefold[iOS]: onOptInDialogComplete");
+    if(g_pOnDialogComplete) {
+        g_pOnDialogComplete->callWithNoParam();
+    }
 }
 
 @end
@@ -250,6 +267,39 @@ void Defold_Enhance_enableLocalNotification(const char *pszTitle, const char *ps
 void Defold_Enhance_disableLocalNotification() {
    dmLogInfo("EnhanceDefold[iOS]: disable local notification");
    [Enhance disableLocalNotification];
+}
+
+void Defold_Enhance_requiresDataConsentOptIn(EnhanceListener *callback_onServiceOptInRequirement) {
+    g_pOnServiceOptInRequirement = callback_onServiceOptInRequirement;
+    [Enhance requiresDataConsentOptIn:g_delegate];
+}
+
+void Defold_Enhance_serviceTermsOptIn(const char *str_sdks) {
+    NSString *requestedSdksString = [NSString stringWithUTF8String:str_sdks];
+    
+    if(![requestedSdksString isEqualToString:@""]) {
+        NSArray *requestedSdks = [requestedSdksString componentsSeparatedByString:@","];
+        [Enhance serviceTermsOptIn:requestedSdks];
+    } else {
+        [Enhance serviceTermsOptIn];
+    }
+}
+
+void Defold_Enhance_showServiceOptInDialogs(const char *str_sdks, EnhanceListener *callback_onDialogComplete) {
+    g_pOnDialogComplete = callback_onDialogComplete;
+    NSString *requestedSdksString = [NSString stringWithUTF8String:str_sdks];
+    
+    if(![requestedSdksString isEqualToString:@""]) {
+        NSArray *requestedSdks = [requestedSdksString componentsSeparatedByString:@","];
+        [Enhance showServiceOptInDialogs:requestedSdks delegate:g_delegate];
+    } else {
+        NSArray *empty = [NSArray new];
+        [Enhance showServiceOptInDialogs:empty delegate:g_delegate];
+    }
+}
+
+void Defold_Enhance_serviceTermsOptOut() {
+    [Enhance serviceTermsOptOut];
 }
 
 void Defold_Enhance_pumpEvents() {
