@@ -43,7 +43,7 @@ bool Defold_Enhance_isRewardedAdReady(const char *pszPlacement) {
 
 void Defold_Enhance_showRewardedAd(const char *pszPlacement, EnhanceListener *pGranted, EnhanceListener *pDeclined, EnhanceListener *pUnavailable) {
     dmLogInfo("Enhance: show rewarded ad, placement: %s", pszPlacement);
-    
+
     if(pGranted)
         pGranted->callWithIntStrParam(0, "REWARDTYPE_ITEM");
 }
@@ -131,8 +131,9 @@ bool Defold_EnhanceInAppPurchases_isSupported() {
 void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed, EnhanceListener *callback_onPurchasePending) {
     dmLogInfo("Enhance: attempt purchase, product name: %s", str_sku);
 
-    if(callback_onPurchaseSuccess)
+    if(callback_onPurchaseSuccess) {
         callback_onPurchaseSuccess->callWithNoParam();
+    }
 }
 
 void Defold_EnhanceInAppPurchases_consume(const char *str_sku, EnhanceListener *callback_onConsumeSuccess, EnhanceListener *callback_onConsumeFailed) {

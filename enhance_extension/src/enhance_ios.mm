@@ -48,7 +48,7 @@ static EnhanceListener *g_pOnDialogComplete;
          g_pRewardGranted->callWithIntStrParam(rewardValue, "REWARDTYPE_COINS");
       else
          g_pRewardGranted->callWithIntStrParam(0, "REWARDTYPE_ITEM");
-      
+
    }
 }
 
@@ -156,32 +156,32 @@ void Defold_Enhance_setCurrencyCallback(EnhanceListener *pGranted) {
 
 bool Defold_Enhance_isInterstitialReady(const char *pszPlacement) {
    NSString *placement = [NSString stringWithUTF8String:pszPlacement];
-   
+
    return [Enhance isInterstitialReady:placement];
 }
 
 void Defold_Enhance_showInterstitial(const char *pszPlacement) {
    NSString *placement = [NSString stringWithUTF8String:pszPlacement];
-   
+
    [[FglEnhance sharedInstance] setInterstitialDelegate:g_delegate];
-   
+
    dmLogInfo("EnhanceDefold[iOS]: show interstitial");
    [Enhance showInterstitialAd:placement];
 }
 
 bool Defold_Enhance_isRewardedAdReady(const char *pszPlacement) {
    NSString *placement = [NSString stringWithUTF8String:pszPlacement];
-   
+
    return [Enhance isRewardedAdReady:placement];
 }
 
 void Defold_Enhance_showRewardedAd(const char *pszPlacement, EnhanceListener *pGranted, EnhanceListener *pDeclined, EnhanceListener *pUnavailable) {
    NSString *placement = [NSString stringWithUTF8String:pszPlacement];
-   
+
    g_pRewardGranted = pGranted;
    g_pRewardDeclined = pDeclined;
    g_pRewardUnavailable = pUnavailable;
-   
+
    dmLogInfo("EnhanceDefold[iOS]: show rewarded ad");
    [Enhance showRewardedAd:g_delegate placement:placement];
 }
@@ -219,9 +219,9 @@ bool Defold_Enhance_isBannerAdReady(const char *pszPlacement) {
 
 void Defold_Enhance_showBannerAd(const char *pszPlacement, const char *pszPosition) {
    Position pos = POSITION_TOP;
-   
+
    dmLogInfo("EnhanceDefold[iOS]: show banner ad at: %s", pszPosition);
-   
+
    if (pszPosition && !strcasecmp(pszPosition, "bottom"))
       pos = POSITION_BOTTOM;
 
@@ -237,11 +237,11 @@ void Defold_Enhance_hideBannerAd() {
 
 void Defold_Enhance_logCustomEvent(const char *pszEventName, const char *pszParamKey, const char *pszParamValue) {
    NSString *eventName = [NSString stringWithUTF8String:pszEventName];
-   
+
    if (pszParamKey && pszParamValue) {
       NSString *paramKey = [NSString stringWithUTF8String:pszParamKey];
       NSString *paramValue = [NSString stringWithUTF8String:pszParamValue];
-      
+
       [Enhance logEvent:eventName withParameter:paramKey andValue:paramValue];
    }
    else {
@@ -252,14 +252,14 @@ void Defold_Enhance_logCustomEvent(const char *pszEventName, const char *pszPara
 void Defold_Enhance_requestLocalNotificationPermission(EnhanceListener *pGranted, EnhanceListener *pRefused) {
    g_pPermissionGranted = pGranted;
    g_pPermissionRefused = pRefused;
-   
+
    [Enhance requestLocalNotificationPermission:g_delegate];
 }
 
 void Defold_Enhance_enableLocalNotification(const char *pszTitle, const char *pszMessage, int delay) {
    NSString *title = [NSString stringWithUTF8String:pszTitle];
    NSString *msg = [NSString stringWithUTF8String:pszMessage];
-   
+
    dmLogInfo("EnhanceDefold[iOS]: enable local notification title: %s message: %s delay:%d", pszTitle, pszMessage, delay);
    [Enhance enableLocalNotificationWithTitle:title message:msg delay:delay];
 }
@@ -276,7 +276,7 @@ void Defold_Enhance_requiresDataConsentOptIn(EnhanceListener *callback_onService
 
 void Defold_Enhance_serviceTermsOptIn(const char *str_sdks) {
     NSString *requestedSdksString = [NSString stringWithUTF8String:str_sdks];
-    
+
     if(![requestedSdksString isEqualToString:@""]) {
         NSArray *requestedSdks = [requestedSdksString componentsSeparatedByString:@","];
         [Enhance serviceTermsOptIn:requestedSdks];
@@ -288,7 +288,7 @@ void Defold_Enhance_serviceTermsOptIn(const char *str_sdks) {
 void Defold_Enhance_showServiceOptInDialogs(const char *str_sdks, EnhanceListener *callback_onDialogComplete) {
     g_pOnDialogComplete = callback_onDialogComplete;
     NSString *requestedSdksString = [NSString stringWithUTF8String:str_sdks];
-    
+
     if(![requestedSdksString isEqualToString:@""]) {
         NSArray *requestedSdks = [requestedSdksString componentsSeparatedByString:@","];
         [Enhance showServiceOptInDialogs:requestedSdks delegate:g_delegate];
@@ -312,9 +312,9 @@ bool Defold_EnhanceInAppPurchases_isSupported() {
 
 void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed, EnhanceListener *callback_onPurchasePending) {
    dmLogInfo("EnhanceDefold[iOS]: attemptPurchase");
-   
+
    NSString *sku = [NSString stringWithUTF8String:str_sku];
-   
+
    g_pPurchaseSuccess = callback_onPurchaseSuccess;
    g_pPurchaseFailed = callback_onPurchaseFailed;
    [[Enhance purchases] attemptPurchase:sku delegate:g_delegate];
@@ -335,7 +335,7 @@ const char*  Defold_EnhanceInAppPurchases_getDisplayPrice(const char *str_sku, c
    NSString *sku = [NSString stringWithUTF8String:str_sku];
    NSString *default_price = [NSString stringWithUTF8String:str_default_price];
    NSString *result = [[Enhance purchases] getDisplayPrice:sku defaultPrice:default_price];
-   
+
    return [result UTF8String];
 }
 
