@@ -9,6 +9,7 @@
 -(void)attemptPurchase:(NSString*)sku delegate:(id)delegate;
 -(NSString*)getDisplayPrice:(NSString*)sku defaultPrice:(NSString*)defaultPrice;
 -(BOOL)isItemOwned:(NSString*)sku;
+-(BOOL)isProductStatusPending:(NSString*)sku;
 -(void)restorePurchases:(id)delegate;
 
 @end

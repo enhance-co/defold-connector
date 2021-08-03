@@ -128,7 +128,7 @@ bool Defold_EnhanceInAppPurchases_isSupported() {
     return true;
 }
 
-void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed) {
+void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed, EnhanceListener *callback_onPurchasePending) {
     dmLogInfo("Enhance: attempt purchase, product name: %s", str_sku);
 
     if(callback_onPurchaseSuccess)
@@ -147,6 +147,10 @@ const char* Defold_EnhanceInAppPurchases_getDisplayPrice(const char *str_sku, co
 }
 
 bool Defold_EnhanceInAppPurchases_isItemOwned(const char *str_sku) {
+    return false;
+}
+
+bool Defold_EnhanceInAppPurchases_isProductStatusPending(const char *str_sku) {
     return false;
 }
 

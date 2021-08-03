@@ -13,6 +13,7 @@
 
 -(void)onPurchaseSuccess;
 -(void)onPurchaseFailed;
+-(void)onPurchasePending;
 
 @end
 
@@ -40,6 +41,7 @@
 -(NSString*)getDisplayTitle:(NSString*)sku defaultTitle:(NSString*)defaultTitle;
 -(NSString*)getDisplayDescription:(NSString*)sku defaultDescription:(NSString*)defaultDescription;
 -(BOOL)isItemOwned:(NSString*)sku;
+-(BOOL)isProductStatusPending:(NSString*)sku;
 -(int)getOwnedItemCount:(NSString*)sku;
 -(void)consume:(NSString*)sku delegate:(id)delegate;
 -(void)manuallyRestorePurchases:(id)delegate;

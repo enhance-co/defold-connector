@@ -146,10 +146,11 @@ extern "C" {
    void Defold_Enhance_disableLocalNotification();
    void Defold_Enhance_pumpEvents();
    bool Defold_EnhanceInAppPurchases_isSupported();
-   void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed);
+   void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed, EnhanceListener *callback_onPurchasePending);
    void Defold_EnhanceInAppPurchases_consume(const char *str_sku, EnhanceListener *callback_onConsumeSuccess, EnhanceListener *callback_onConsumeFailed);
    const char* Defold_EnhanceInAppPurchases_getDisplayPrice(const char *str_sku, const char *str_default_price);
    bool Defold_EnhanceInAppPurchases_isItemOwned(const char *str_sku);
+   bool Defold_EnhanceInAppPurchases_isProductStatusPending(const char *str_sku);
    int Defold_EnhanceInAppPurchases_getOwnedItemCount(const char *str_sku);
    void Defold_EnhanceInAppPurchases_manuallyRestorePurchases(EnhanceListener *callback_onRestoreSuccess, EnhanceListener *callback_onRestoreFailed);
    const char* Defold_EnhanceInAppPurchases_getDisplayTitle(const char *str_sku, const char *str_default_title);

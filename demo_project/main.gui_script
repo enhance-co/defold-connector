@@ -237,7 +237,7 @@ end
 
 function on_purchase_clicked()
 	-- Attempt purchase
-	enhance.attemptPurchase(product_name, on_purchase_success, on_purchase_failed)
+	enhance.attemptPurchase(product_name, on_purchase_success, on_purchase_failed, on_purchase_pending)
 end
 
 function on_consume_clicked()
@@ -251,7 +251,13 @@ function on_purchase_success()
 end
 
 function on_purchase_failed()
+	update_IAP_label()
 	write_log("Purchase failed")
+end
+
+function on_purchase_pending()
+	update_IAP_label()
+	write_log("Purchase pending")
 end
 
 function on_consume_success()
@@ -260,6 +266,7 @@ function on_consume_success()
 end
 
 function on_consume_failed()
+	update_IAP_label()
 	write_log("Consume failed")
 end
 
@@ -275,7 +282,8 @@ function update_IAP_label()
 	local title = enhance.getDisplayTitle(product_name, "Default Title")
 	local price = enhance.getDisplayPrice(product_name, "Default Price")
 	local quantity = enhance.getOwnedItemCount(product_name)
+	local isPending = enhance.isProductStatusPending(product_name)
 
 	local text_node = gui.get_node("text_label")
-	gui.set_text(text_node, title .. " - " .. price .. " - Qty: " .. quantity)
+	gui.set_text(text_node, title .. " - " .. price .. " - Qty: " .. quantity .. " - isPending: " .. tostring(isPending))
 end

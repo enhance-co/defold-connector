@@ -27,6 +27,7 @@ static EnhanceListener *g_pPermissionGranted;
 static EnhanceListener *g_pPermissionRefused;
 static EnhanceListener *g_callback_onPurchaseSuccess;
 static EnhanceListener *g_callback_onPurchaseFailed;
+static EnhanceListener *g_callback_onPurchasePending;
 static EnhanceListener *g_callback_onConsumeSuccess;
 static EnhanceListener *g_callback_onConsumeFailed;
 static EnhanceListener *g_callback_onRestoreSuccess;
@@ -65,6 +66,7 @@ enum EventType {
     ENHANCE_EVENT_CURRENCY_GRANTED = 4,
     ENHANCE_EVENT_PURCHASE_SUCCEEDED = 5,
     ENHANCE_EVENT_PURCHASE_FAILED = 6,
+   ENHANCE_EVENT_PURCHASE_PENDING = 14,
     ENHANCE_EVENT_CONSUME_SUCCEEDED = 7,
     ENHANCE_EVENT_CONSUME_FAILED = 8,
     ENHANCE_EVENT_INTERSTITIAL_COMPLETED = 9,
@@ -895,7 +897,12 @@ JNIEXPORT void FglEnhance_pumpEvents(void) {
                 dmLogInfo("EnhanceDefold[android]: onPurchaseFailed");
                 if (g_callback_onPurchaseFailed)
                 g_callback_onPurchaseFailed->callWithNoParam();
-                break;
+            case ENHANCE_EVENT_PURCHASE_PENDING:
+               dmLogInfo("EnhanceDefold[android]: onPurchasePending");
+               if (g_callback_onPurchasePending) {
+                  g_callback_onPurchasePending->callWithNoParam();
+               }
+               break;
 
             case ENHANCE_EVENT_CONSUME_SUCCEEDED:
                 dmLogInfo("EnhanceDefold[android]: onConsumeSuccess");
@@ -1173,9 +1180,10 @@ JNIEXPORT bool Defold_EnhanceInAppPurchases_isSupported() {
  * @param callback_onPurchaseFailed function called when the purchase is declined
 */
 
-JNIEXPORT void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed) {
-    g_callback_onPurchaseSuccess = callback_onPurchaseSuccess;
-    g_callback_onPurchaseFailed = callback_onPurchaseFailed;
+JNIEXPORT void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed, EnhanceListener *callback_onPurchasePending) {
+   g_callback_onPurchaseSuccess = callback_onPurchaseSuccess;
+   g_callback_onPurchaseFailed = callback_onPurchaseFailed;
+   g_callback_onPurchasePending = callback_onPurchasePending;
     enhanceJniCallStrRetVoid(INTERNAL_JAVA_CLASS, "attemptPurchaseJNI", str_sku);
 }
  
@@ -1221,6 +1229,18 @@ JNIEXPORT const char* Defold_EnhanceInAppPurchases_getDisplayPrice(const char *s
 
 JNIEXPORT bool Defold_EnhanceInAppPurchases_isItemOwned(const char *str_sku) {
     return enhanceJniCallStrRetBool(ENHANCEINAPPURCHASES_JAVA_CLASS, "isItemOwned", str_sku);
+}
+
+/**
+ * Check if product has pending purchase status
+ *
+ * @param str_sku product to check
+ *
+ * @return true if product has pending purchase status, false if not
+ */
+
+JNIEXPORT bool Defold_EnhanceInAppPurchases_isProductStatusPending(const char *str_sku) {
+   return enhanceJniCallStrRetBool(ENHANCEINAPPURCHASES_JAVA_CLASS, "isProductStatusPending", str_sku);
 }
 
 /**

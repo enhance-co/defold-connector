@@ -298,9 +298,10 @@ static int EnhanceAttemptPurchase(lua_State* L)
 
    g_onPurchaseSuccess.set(L, 2);
    g_onPurchaseFailed.set(L, 3);
+   g_onPurchasePending.set(L, 4);
    
-   Defold_EnhanceInAppPurchases_attemptPurchase(str_sku, &g_onPurchaseSuccess, &g_onPurchaseFailed);
-   
+   Defold_EnhanceInAppPurchases_attemptPurchase(str_sku, &g_onPurchaseSuccess, &g_onPurchaseFailed, &g_onPurchasePending);
+
    // Return no value
    return 0;
 }
@@ -343,9 +344,18 @@ static int EnhanceIsItemOwned(lua_State* L)
    return 1;
 }
 
-static int EnhanceGetOwnedItemCount(lua_State* L)
-{
-	const char* str_sku = luaL_checkstring(L, 1);
+static int EnhanceIsProductStatusPending(lua_State* L) {
+   const char* str_sku = luaL_checkstring(L, 1);
+
+   bool bIsReady = Defold_EnhanceInAppPurchases_isProductStatusPending(str_sku);
+
+   // Return 1 value
+   lua_pushboolean(L, bIsReady);
+   return 1;
+}
+
+static int EnhanceGetOwnedItemCount(lua_State* L) {
+   const char* str_sku = luaL_checkstring(L, 1);
 
    int itemCount = Defold_EnhanceInAppPurchases_getOwnedItemCount(str_sku);
    
@@ -472,6 +482,7 @@ static const luaL_reg Module_methods[] =
    {"consume", EnhanceConsume},   
    {"getDisplayPrice", EnhanceGetDisplayPrice},
    {"isItemOwned", EnhanceIsItemOwned},
+   {"isProductStatusPending", EnhanceIsProductStatusPending},
    {"getOwnedItemCount", EnhanceGetOwnedItemCount},
    {"manuallyRestorePurchases", EnhanceManuallyRestorePurchases},
    {"getDisplayTitle", EnhanceGetDisplayTitle},

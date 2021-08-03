@@ -310,7 +310,7 @@ bool Defold_EnhanceInAppPurchases_isSupported() {
    return [[Enhance purchases] isSupported];
 }
 
-void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed) {
+void Defold_EnhanceInAppPurchases_attemptPurchase(const char *str_sku, EnhanceListener *callback_onPurchaseSuccess, EnhanceListener *callback_onPurchaseFailed, EnhanceListener *callback_onPurchasePending) {
    dmLogInfo("EnhanceDefold[iOS]: attemptPurchase");
    
    NSString *sku = [NSString stringWithUTF8String:str_sku];
@@ -342,6 +342,10 @@ const char*  Defold_EnhanceInAppPurchases_getDisplayPrice(const char *str_sku, c
 bool Defold_EnhanceInAppPurchases_isItemOwned(const char *str_sku) {
    NSString *sku = [NSString stringWithUTF8String:str_sku];
    return [[Enhance purchases] isItemOwned:sku];
+}
+
+bool Defold_EnhanceInAppPurchases_isProductStatusPending(const char *str_sku) {
+   return NO;
 }
 
 int Defold_EnhanceInAppPurchases_getOwnedItemCount(const char *str_sku) {
