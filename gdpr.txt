@@ -1,6 +1,6 @@
-# Enhance Drag & Drop Library by Enhance, Inc.
+# Enhance Drag & Drop Library by MobileFuse, LLC
 # https://enhance.co/documentation
-# 
+#
 # GDPR Information for DEFOLD
 
 Overview

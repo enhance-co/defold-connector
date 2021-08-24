@@ -1,6 +1,6 @@
-# Enhance Drag & Drop Library by Enhance, Inc.
+# Enhance Drag & Drop Library by MobileFuse, LLC
 # https://enhance.co/documentation
-# 
+#
 # DEFOLD
 
 Setup
@@ -16,7 +16,7 @@ Or point to the ZIP file of a specific release (https://github.com/enhance-co/de
 Interstitial Ads
 ----------------
 
-Interstitial Ads are short static or video ads, usually shown between levels or when game is over. 
+Interstitial Ads are short static or video ads, usually shown between levels or when game is over.
 
 
 Example Usage:
@@ -34,7 +34,7 @@ boolean enhance.isInterstitialReady(
 )
 
 Check if an interstitial ad from any of the included SDK providers is ready to be shown.
-Placement is optional and specifies an internal placement (from the Enhance mediation editor). 
+Placement is optional and specifies an internal placement (from the Enhance mediation editor).
 Returns true if any ad is ready, false otherwise.
 
 
@@ -42,7 +42,7 @@ nil enhance.showInterstitialAd(
     string placement = "default"
 )
 
-Display a new interstitial ad if any is currently available. The ad provider is selected based on your app's mediation settings. 
+Display a new interstitial ad if any is currently available. The ad provider is selected based on your app's mediation settings.
 Placement is an optional internal placement (from the Enhance mediation editor).
 Returns nothing.
 
@@ -334,7 +334,7 @@ end
 
 function purchase()
     if enhance.iapIsSupported() then
-        enhance.attemptPurchase("my_product", on_purchase_success, on_purchase_failed)
+        enhance.attemptPurchase("my_product", on_purchase_success, on_purchase_failed, on_purchase_pending)
     end
 end
 
@@ -350,11 +350,12 @@ Returns true if purchasing is available, false otherwise.
 nil enhance.attemptPurchase(
     string productName,
     function onPurchaseSuccessCallback,
-    function onPurchaseFailedCallback
+    function onPurchaseFailedCallback,
+    function onPurchasePendingCallback
 )
 
 Start the purchase flow for the given product.
-Product name is the reference name which you entered during the Enhance flow. 
+Product name is the reference name which you entered during the Enhance flow.
 Callbacks specify functions which are invoked when purchase is successful or not.
 Returns nothing.
 
@@ -379,6 +380,16 @@ boolean enhance.isItemOwned(
 Check if the given product is already owned. The result may be inaccurate, depending on whether the SDK provider stores the information about your products or not.
 Product name is the reference name which you entered during the Enhance flow.
 Returns true if the item is owned, false otherwise.
+
+
+boolean enhance.isProductStatusPending(
+    string productName
+)
+
+
+Check if product has "pending" purchase status. The result may be inaccurate, depending on whether the SDK provider stores the information about your products or not.
+Product name is the reference name which you entered during the Enhance flow.
+Returns true to callback if the item has pending status, false otherwise.
 
 
 number enhance.getOwnedItemCount(
@@ -407,7 +418,7 @@ string enhance.getDisplayPrice(
 
 Get a localized display price of the given product, for example: "100zł", "100¥".
 Product name is the reference name which you entered during the Enhance flow.
-Default price will be used if a real one can't be fetched. 
+Default price will be used if a real one can't be fetched.
 Returns a string containing the localized display price.
 
 
